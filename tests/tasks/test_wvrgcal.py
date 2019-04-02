@@ -5,9 +5,9 @@ import sys
 import shutil
 import numpy as np
 
-from CASAtools import ctsys, table
-from CASAtasks import flagdata, smoothcal, split
-from ALMAtasks import wvrgcal
+from casatools import ctsys, table
+from casatasks import flagdata, smoothcal, split
+from almatasks import wvrgcal
 import unittest
 ### for testhelper import
 sys.path.append(os.path.abspath(os.path.basename(__file__)))

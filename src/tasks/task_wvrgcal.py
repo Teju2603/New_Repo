@@ -1,7 +1,7 @@
 import os
 import numpy
-from CASAtasks import casalog
-from CASAtools import ctsys, ms, calibrater, quanta
+from casatasks import casalog
+from casatools import ctsys, ms, calibrater, quanta
 
 def wvrgcal(vis=None, caltable=None, toffset=None, segsource=None,
         sourceflag=None, tie=None, nsol=None, disperse=None, 

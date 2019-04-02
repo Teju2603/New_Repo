@@ -57,8 +57,9 @@ import re
 pyversion = float(sys.version_info[0]) + float(sys.version_info[1]) / 10.0
 
 try:
-    from CASAtools.config import build as props
-    from CASAtools.config import build as tools_config
+    from casatools.config import build as props
+    from casatools.config import build as tools_config
+    openmp_flags = [] if len(props['build.flags.link.openmp']) == 0 else []
 except:
     print("cannot find CASAtools (https://open-bitbucket.nrao.edu/projects/CASA/repos/CASAtools/browse) in PYTHONPATH")
     os._exit(1)
@@ -76,7 +77,7 @@ from distutils.dir_util import copy_tree, remove_tree
 from distutils.core import Command
 from distutils.util import spawn
 
-module_name = 'ALMAtasks'
+module_name = 'almatasks'
 
 CASACORE_LEX=[ 'casa-source/casacore/tables/TaQL/RecordGram.ll',
                'casa-source/casacore/tables/TaQL/TableGram.ll',
@@ -675,7 +676,7 @@ if __name__ == '__main__':
     cc = new_compiler("posix", verbose=True)
     customize_compiler(cc,True)
     objs = cc.compile( CASAWVR_SOURCE, os.path.join(tmpdir,"wvrgcal") )
-    cc.link( CCompiler.EXECUTABLE, objs, os.path.join(bindir,"wvrgcal"), libraries=["boost_program_options-mt", "gsl", "lapack", "blas"] )
+    cc.link( CCompiler.EXECUTABLE, objs, os.path.join(bindir,"wvrgcal"), libraries=["boost_program_options-mt", "lapack", "blas", "pthread", "dl"], extra_preargs=props['build.flags.link.openmp'] + props['build.flags.link.gsl'] )
 
     upgrade_xml(xml_xlate)
     print("generating task python files...")
