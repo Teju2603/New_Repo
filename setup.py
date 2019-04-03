@@ -413,6 +413,9 @@ else:
         else:
             return ("","")
 
+def isexe(f):
+    return os.path.isfile(f) and os.access(f, os.X_OK)
+
 def clean_args(l):
     return [a for a in l if len(a) > 0]
 
@@ -672,11 +675,25 @@ if __name__ == '__main__':
     moduledir = os.path.join('build', distutils_dir_name('lib'), module_name)
     privatedir = os.path.join(moduledir,"private")
     bindir = os.path.join(privatedir, "bin")
+    libdir = os.path.join(privatedir, "lib")
     mkpath(bindir)
     cc = new_compiler("posix", verbose=True)
     customize_compiler(cc,True)
     objs = cc.compile( CASAWVR_SOURCE, os.path.join(tmpdir,"wvrgcal") )
-    cc.link( CCompiler.EXECUTABLE, objs, os.path.join(bindir,"wvrgcal"), libraries=["boost_program_options-mt", "lapack", "blas", "pthread", "dl"], extra_preargs=props['build.flags.link.openmp'] + props['build.flags.link.gsl'] )
+    if sys.platform == 'darwin':
+        ### need to get '/opt/local/lib/gcc5' from gfortran directly
+        rpath = [ '-Wl,-rpath,@loader_path/../lib' ]
+        archflags = ['-L/opt/local/lib/gcc5']
+    else:
+        rpath = [ '-Wl,-rpath,$ORIGIN/../lib']
+        archflags = [ ]
+
+    cc.link( CCompiler.EXECUTABLE, objs, os.path.join(bindir,"wvrgcal"), libraries=["boost_program_options-mt", "lapack", "blas", "pthread", "dl"], extra_preargs=props['build.flags.link.openmp'] + rpath + props['build.flags.link.gsl'] + archflags )
+    if isexe("scripts/mod-closure") and not os.path.isfile(".created.closure"):
+        print("generating module closure...")
+        if Proc([ "scripts/mod-closure", moduledir, "lib=%s" % libdir ]) != 0:
+            sys.exit("\tclosure generation failed...")
+        open(".created.closure",'a').close( )
 
     upgrade_xml(xml_xlate)
     print("generating task python files...")
