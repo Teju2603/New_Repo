@@ -66,9 +66,10 @@ except:
 
 assert tools_config['option.boost'] != 0, "Boost framework is required to build ALMAtasks"
 
+from setuptools import setup, find_packages
 from distutils.ccompiler import new_compiler, CCompiler
 from distutils.sysconfig import customize_compiler
-from distutils.core import setup, Extension
+from distutils.core import Extension
 from distutils.ccompiler import get_default_compiler
 from distutils.ccompiler import show_compilers
 from distutils.command.build_ext import build_ext
@@ -717,4 +718,3 @@ if __name__ == '__main__':
         tgt = os.path.join(privatedir,os.path.basename(m))
         copy_tree(m,tgt)
 
-    
