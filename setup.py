@@ -265,7 +265,7 @@ CASAWVR_SOURCE = [ 'casa-source/code/air_casawvr/cmdline/wvrgcal.cpp', 'casa-sou
                    'casa-source/casacore/measures/Measures/MCBaseline.cc', 'casa-source/casacore/casa/Quanta/MVBaseline.cc',
                    'casa-source/casacore/ms/MeasurementSets/StokesConverter.cc', 'casa-source/casacore/ms/MSSel/MSSelectionErrorHandler.cc',
                    'casa-source/casacore/scimath/Mathematics/SquareMatrix2.cc', 'casa-source/casacore/ms/MSSel/MSArrayGram.cc',
-                   'casa-source/casacore/casa/Containers/Map2.cc', 'casa-source/casacore/ms/MSSel/MSArrayParse.cc',
+                   'casa-source/casacore/ms/MSSel/MSArrayParse.cc',
                    'casa-source/casacore/ms/MSSel/MSFieldGram.cc', 'casa-source/casacore/ms/MSSel/MSAntennaGram.cc',
                    'casa-source/casacore/tables/TaQL/ExprNodeRecord.cc', 'casa-source/casacore/ms/MSSel/MSFieldIndex.cc',
                    'casa-source/casacore/ms/MSSel/MSFieldParse.cc', 'casa-source/casacore/casa/OS/DOos.cc',
