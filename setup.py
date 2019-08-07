@@ -35,7 +35,7 @@ classifiers = """\
 Development Status :: 3 - Alpha
 Intended Audience :: Developers
 License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)
-Programming Language :: Python :: 2.7
+Programming Language :: Python :: 3
 Programming Language :: C++
 Topic :: Software Development
 Topic :: Scientific/Engineering :: Astronomy
@@ -77,8 +77,17 @@ from distutils.errors import DistutilsExecError, CompileError
 from distutils.dir_util import copy_tree, remove_tree
 from distutils.core import Command
 from distutils.util import spawn
+from setuptools.dist import Distribution
+
+setup_config = {}
+try:
+    from wheel.bdist_wheel import bdist_wheel
+    setup_config['bdist_wheel'] = bdist_wheel
+except ImportError:
+    pass  # custom command not needed if wheel is not installed
 
 module_name = 'almatasks'
+version_number = '2019.1'
 
 CASACORE_LEX=[ 'casa-source/casacore/tables/TaQL/RecordGram.ll',
                'casa-source/casacore/tables/TaQL/TableGram.ll',
@@ -671,6 +680,29 @@ class casa_build_ext(build_ext):
         customize_compiler(self.compiler)
         build_ext.build_extensions(self)
 
+class BinaryDistribution(Distribution):
+    user_options = bdist_wheel.user_options + [
+        ('build=', None, 'specify build number') ]
+
+    def initialize_options(self):
+        Distribution.initialize_options(self)
+        self.build = build_number
+
+    """Distribution which always forces a binary package with platform name"""
+    def has_ext_modules(foo):
+        return True
+
+def all_files( dir ):
+    acc = [ ]
+    initial_dir = os.getcwd( )
+    os.chdir(os.path.join('build', distutils_dir_name('lib')))
+    for root, directories, filenames in os.walk(dir):
+        r = os.path.join(*root.split(os.sep)[1:])
+        for filename in filenames:
+            acc.append(os.path.join(r,filename))
+    os.chdir(initial_dir)
+    return acc
+
 if __name__ == '__main__':
     generate_version_file("generated/source/version.cc")
     generate_lex(CASACORE_LEX)
@@ -721,3 +753,23 @@ if __name__ == '__main__':
         tgt = os.path.join(privatedir,os.path.basename(m))
         copy_tree(m,tgt)
 
+    if len(setup_config) > 0:
+        setup( name=module_name,
+               version=version_number,
+               maintainer="Darrell Schiebel",
+               maintainer_email="drs@nrao.edu",
+               author="CASA development team",
+               author_email="aips2-request@nrao.edu",
+               url="https://open-bitbucket.nrao.edu/projects/CASA/repos/almatasks/browse",
+               download_url="https://casa.nrao.edu/download/",
+               license="GNU Library or Lesser General Public License (LGPL)",
+               classifiers=[ 'Programming Language :: Python :: 3'],
+               description="ALMA tasks (inc wvrgcal)",
+               distclass=BinaryDistribution,
+               long_description="ALMA tasks",
+               cmdclass=setup_config,
+               package_dir = { '' : os.path.join('build', distutils_dir_name('lib')) },
+               packages=[ "almatasks", "almatasks.private" ],
+               package_data={'almatasks': all_files('almatasks/private/bin') + all_files('almatasks/private/lib')},
+               install_requires=["casatasks", "casatools"]
+        )
