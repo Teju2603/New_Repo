@@ -369,7 +369,12 @@ CASAWVR_SOURCE = [ 'casa-source/code/air_casawvr/cmdline/wvrgcal.cpp', 'casa-sou
                    'casa-source/casacore/tables/Tables/TabPath.cc', 'casa-source/casacore/ms/MSSel/MSSSpwErrorHandler.cc',
                    'casa-source/casacore/casa/Utilities/cregex.cc',
                    'casa-source/casacore/casa/aips.cc',
-                   'generated/source/version.cc' ]
+                   #### compile asdm storage manager into executable
+                   'casa-source/code/asdmstman/AsdmColumn.cc', 'casa-source/code/asdmstman/AsdmStMan.cc',
+                   'casa-source/code/asdmstman/AsdmIndex.cc', 'casa-source/code/asdmstman/Register.cc',
+                   #### version information
+                   'generated/source/version.cc',
+]
 
 platform_cflags = { 'darwin': [ ],
                     'linux2': [ '-fcx-fortran-rules' ],
@@ -391,14 +396,14 @@ module_cflags = { '/casacore/': ['-DCFITSIO_VERSION_MAJOR=3', '-DCFITSIO_VERSION
                                       '-DAIPS_STDLIB', '-DCASACORE_NEEDS_RETHROW', '-DCASA_USECASAPATH', \
                                       '-DDBUS_CPP', '-DQWT6', '-DUseCasacoreNamespace', \
                                       '-D_FILE_OFFSET_BITS=64', '-D_LARGEFILE_SOURCE', '-DNO_CRASH_REPORTER', \
-                                      '-fno-omit-frame-pointer', '-DWITHOUT_ACS', '-DWITHOUT_BOOST',
+                                      '-fno-omit-frame-pointer', '-DWITHOUT_ACS', '-DWITHOUT_BOOST', '-DCASA6', \
                                       '-DCASATOOLS' ] + platform_cflags[sys.platform],
                        'generated/':     ['-DAIPS_64B', '-DAIPS_AUTO_STL', '-DAIPS_DEBUG', '-DAIPS_HAS_QWT', \
                                           '-DAIPS_LINUX', '-DAIPS_LITTLE_ENDIAN', '-DAIPS_STDLIB', \
                                           '-DCASACORE_NEEDS_RETHROW', '-DCASA_USECASAPATH', '-DDBUS_CPP', '-DQWT6', \
                                           '-DUseCasacoreNamespace', '-D_FILE_OFFSET_BITS=64', '-D_LARGEFILE_SOURCE', \
                                           '-DNO_CRASH_REPORTER', '-fno-omit-frame-pointer', '-DWITHOUT_ACS', '-DWITHOUT_BOOST',
-                                          '-DCASATOOLS' ] + platform_cflags[sys.platform] }
+                                          '-DCASATOOLS', '-DCASA6' ] + platform_cflags[sys.platform] }
 
 xml_xlate = { 'casa-source/gcwrap/tasks/wvrgcal.xml': 'xml/wvrgcal.xml' }
 xml_files = [ 'xml/wvrgcal.xml' ]
