@@ -88,6 +88,10 @@ except ImportError:
 
 module_name = 'almatasks'
 version_number = '2019.1'
+try:
+    version_number = os.environ['CASA_GIT_TAG']
+except KeyError:
+    pass
 
 CASACORE_LEX=[ 'casa-source/casacore/tables/TaQL/RecordGram.ll',
                'casa-source/casacore/tables/TaQL/TableGram.ll',
