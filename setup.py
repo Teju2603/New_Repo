@@ -409,7 +409,7 @@ module_cflags = { '/casacore/': ['-DCFITSIO_VERSION_MAJOR=3', '-DCFITSIO_VERSION
                                           '-DNO_CRASH_REPORTER', '-fno-omit-frame-pointer', '-DWITHOUT_ACS', '-DWITHOUT_BOOST',
                                           '-DCASATOOLS', '-DCASA6' ] + platform_cflags[sys.platform] }
 
-xml_xlate = { 'casa-source/gcwrap/tasks/wvrgcal.xml': 'xml/wvrgcal.xml' }
+xml_xlate = { 'casa-source/casa5/gcwrap/tasks/wvrgcal.xml': 'xml/wvrgcal.xml' }
 xml_files = [ 'xml/wvrgcal.xml' ]
 private_scripts = [ 'src/tasks/task_wvrgcal.py', 'src/scripts/almahelpers.py' ]
 private_modules = [  ]
@@ -650,6 +650,7 @@ def upgrade_xml( conversions ):
         if not os.path.exists(conversions[k]):
             print("upgrading %s" % k)
 
+            print("%s %s %s" % (tools_config['build.compiler.xml-casa'], "-upgrade", k))
             proc = Popen( [tools_config['build.compiler.xml-casa'], "-upgrade", k],
                           stdout=subprocess.PIPE )
 
