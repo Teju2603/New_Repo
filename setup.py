@@ -57,6 +57,7 @@ import argparse
 
 parser=argparse.ArgumentParser()
 parser.add_argument('--version', help='version')
+parser.add_argument('bdist_wheel', help='bdist_wheel')
 args=parser.parse_args()
 
 print (args.version)
