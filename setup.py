@@ -96,6 +96,24 @@ except ImportError:
 
 module_name = 'almatasks'
 
+if pyversion < 3:
+    str_encode = str
+    str_decode = str
+    def pipe_decode(output):
+        return output
+else:
+    def str_encode(s):
+        return bytes(s,sys.getdefaultencoding())
+    def str_decode(bs):
+        return bs.decode(sys.getdefaultencoding(),"strict")
+    def pipe_decode(output):
+        if isinstance(output,bytes) or isinstance(output,bytearray):
+            return str_decode(output)
+        elif isinstance(output,tuple):
+            return (str_decode(output[0]),str_decode(output[1]))
+        else:
+            return ("","")
+
 def compute_version( ):
     if (args.version != None ):
         print (args.version.split("."))
