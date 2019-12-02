@@ -87,11 +87,41 @@ except ImportError:
     pass  # custom command not needed if wheel is not installed
 
 module_name = 'almatasks'
-version_number = '2019.1'
-try:
-    version_number = os.environ['CASA_GIT_TAG']
-except KeyError:
-    pass
+
+def compute_version( ):
+    if (args.version != None ):
+        print (args.version.split("."))
+        (major, minor, patch) = args.version.split(".")
+        return(int(major), int(minor), int(patch))
+    else:
+        proc = Popen( [ "./version" ], stdout=PIPE, stderr=PIPE )
+        out,err = pipe_decode(proc.communicate( ))
+        print(out)
+        devbranchtag = out.split(" ")[0].strip()
+        print(devbranchtag)
+        releasetag = out.split(" ")[1].strip()
+        dirty=""
+        if (len(out.split(" ")) == 3):
+            print("Latest commit doesn't have a tag. Adding -dirty flag to version string.")
+            dirty="+" + out.split(" ")[2].strip() # "+" denotes local version identifier as described in PEP440
+        print(releasetag)
+        devbranchversion = ""
+        devbranchrevision = ""
+        if (devbranchtag != releasetag):
+            if (devbranchtag.startswith("CAS-")):
+                devbranchversion=devbranchtag.split("-")[1]
+            else:
+                devbranchversion=100
+            devbranchrevision = devbranchtag.split("-")[-1]
+        else:
+            isDevBranch = False
+        (major, minor, patch) = releasetag.split(".")
+        return(int(major), int(minor), int(patch), devbranchversion, devbranchrevision, dirty)
+
+(almatasks_major,almatasks_minor,almatasks_patch,devbranchversion,devbranchrevision,dirty) = compute_version( )
+almatasks_version = '%d.%d.%d%s' % (almatasks_major,almatasks_minor,almatasks_patch,dirty)
+if devbranchversion !="":
+    almatasks_version = '%d.%d.%da%sdev%s%s' % (almatasks_major,almatasks_minor,almatasks_patch,devbranchversion,devbranchrevision,dirty)
 
 CASACORE_LEX=[ 'casa-source/casatools/casacore/tables/TaQL/RecordGram.ll',
                'casa-source/casatools/casacore/tables/TaQL/TableGram.ll',
@@ -765,7 +795,7 @@ if __name__ == '__main__':
 
     if len(setup_config) > 0:
         setup( name=module_name,
-               version=version_number,
+               version=almatasks_version,
                maintainer="Darrell Schiebel",
                maintainer_email="drs@nrao.edu",
                author="CASA development team",
