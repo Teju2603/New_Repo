@@ -53,6 +53,10 @@ import errno
 import sys
 import os
 import re
+import argparse
+
+parser=argparse.ArgumentParser()
+parser.add_argument('--version', help='version')
 
 pyversion = float(sys.version_info[0]) + float(sys.version_info[1]) / 10.0
 
