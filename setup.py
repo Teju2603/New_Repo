@@ -57,6 +57,9 @@ import argparse
 
 parser=argparse.ArgumentParser()
 parser.add_argument('--version', help='version')
+args=parser.parse_args()
+
+print (args.version)
 
 pyversion = float(sys.version_info[0]) + float(sys.version_info[1]) / 10.0
 
