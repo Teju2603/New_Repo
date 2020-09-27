@@ -223,6 +223,7 @@ CASAWVR_SOURCE = [ 'casa-source/casa5/code/air_casawvr/cmdline/wvrgcal.cpp', 'ca
                    'casa-source/casatools/casacore/casa/BasicSL/String.cc', 'casa-source/casatools/casacore/tables/TaQL/TaQLResult.cc',
                    'casa-source/casatools/casacore/casa/System/AipsrcValue2.cc', 'casa-source/casatools/casacore/tables/Tables/ArrayColumn_tmpl.cc',
                    'casa-source/casatools/casacore/tables/DataMan/DataManager.cc', 'casa-source/casatools/casacore/casa/Quanta/MVDirection.cc',
+                   'casa-source/casatools/casacore/tables/DataMan/DataManagerColumn.cc', 'casa-source/casatools/casacore/tables/DataMan/StManColumnBase.cc',
                    'casa-source/casatools/casacore/tables/Tables/PlainTable.cc', 'casa-source/casatools/casacore/tables/Tables/ColumnCache.cc',
                    'casa-source/casatools/casacore/tables/Tables/TableCache.cc', 'casa-source/casatools/casacore/casa/Quanta/MVFrequency.cc',
                    'casa-source/casatools/casacore/casa/OS/Mutex.cc', 'casa-source/casatools/casacore/casa/OS/MemoryTrace.cc',
@@ -253,7 +254,9 @@ CASAWVR_SOURCE = [ 'casa-source/casa5/code/air_casawvr/cmdline/wvrgcal.cpp', 'ca
                    'casa-source/casatools/casacore/ms/MeasurementSets/MSProcessor.cc', 'casa-source/casatools/casacore/ms/MeasurementSets/MSFreqOffset.cc',
                    'casa-source/casatools/casacore/measures/Measures/MEarthMagnetic.cc', 'casa-source/casatools/casacore/ms/MeasurementSets/MSPolarization.cc',
                    'casa-source/casatools/casacore/casa/Containers/ValueHolderRep.cc', 'casa-source/casatools/casacore/tables/Tables/ArrColDesc_tmpl.cc',
+                   'casa-source/casatools/casacore/tables/Tables/ArrColData.cc',
                    'casa-source/casatools/casacore/ms/MSSel/MSSelection.cc', 'casa-source/casatools/casacore/ms/MSOper/MSKeys.cc',
+                   'casa-source/casatools/casacore/tables/Tables/ArrColDesc.cc', 'casa-source/casatools/casacore/tables/Tables/ArrayColumnBase.cc',
                    'casa-source/casatools/casacore/tables/DataMan/CompressFloat.cc', 'casa-source/casatools/casacore/casa/Quanta/QuantumHolder.cc',
                    'casa-source/casatools/casacore/casa/IO/RegularFileIO.cc', 'casa-source/casatools/casacore/casa/Utilities/StringDistance.cc',
                    'casa-source/casatools/casacore/tables/DataMan/TiledDataStMan.cc',
@@ -288,6 +291,7 @@ CASAWVR_SOURCE = [ 'casa-source/casa5/code/air_casawvr/cmdline/wvrgcal.cpp', 'ca
                    'casa-source/casatools/casacore/ms/MSSel/MSSelectionError.cc', 'casa-source/casatools/casacore/ms/MeasurementSets/MSSpectralWindow.cc',
                    'casa-source/casatools/casacore/ms/MeasurementSets/MSWeatherColumns.cc', 'casa-source/casatools/casacore/casa/Quanta/MVRadialVelocity.cc',
                    'casa-source/casatools/casacore/tables/Tables/RefRows.cc', 'casa-source/casatools/casacore/tables/Tables/ScaColDesc_tmpl.cc',
+                   'casa-source/casatools/casacore/tables/Tables/RowNumbers.cc', 'casa-source/casatools/casacore/tables/DataMan/VirtArrCol.cc',
                    'casa-source/casatools/casacore/tables/TaQL/ExprMathNode.cc', 'casa-source/casatools/casacore/tables/TaQL/ExprNodeRep.cc',
                    'casa-source/casatools/casacore/tables/TaQL/MArrayBase.cc', 'casa-source/casatools/casacore/tables/TaQL/ExprNodeSet.cc',
                    'casa-source/casatools/casacore/tables/TaQL/ExprUDFNode.cc', 'casa-source/casatools/casacore/measures/TableMeasures/TableQuantumDesc.cc',
@@ -346,7 +350,8 @@ CASAWVR_SOURCE = [ 'casa-source/casa5/code/air_casawvr/cmdline/wvrgcal.cpp', 'ca
                    'casa-source/casatools/casacore/casa/Quanta/Unit.cc', 'casa-source/casatools/casacore/casa/Utilities/SortError.cc',
                    'casa-source/casatools/casacore/casa/BasicMath/Math.cc', 'casa-source/casatools/casacore/casa/BasicSL/Complex.cc',
                    'casa-source/casatools/casacore/casa/Arrays/Matrix2Math.cc', 'casa-source/casatools/casacore/casa/Arrays/Array_tmpl.cc',
-                   'casa-source/casatools/casacore/measures/TableMeasures/TableMeas_tmpl.cc', 'casa-source/casatools/casacore/casa/Containers/Block_tmpl.cc',
+#                  'casa-source/casatools/casacore/measures/TableMeasures/TableMeas_tmpl.cc',
+                   'casa-source/casatools/casacore/casa/Containers/Block_tmpl.cc',
                    'casa-source/casatools/casacore/casa/Quanta/Euler.cc', 'casa-source/casatools/casacore/casa/Logging/LogIO.cc',
                    'casa-source/casatools/casacore/casa/Quanta/MVuvw.cc', 'casa-source/casatools/casacore/measures/Measures/MCuvw.cc',
                    'casa-source/casatools/casacore/casa/Quanta/QBase.cc', 'casa-source/casatools/casacore/casa/Utilities/Regex.cc',
@@ -399,7 +404,8 @@ CASAWVR_SOURCE = [ 'casa-source/casa5/code/air_casawvr/cmdline/wvrgcal.cpp', 'ca
                    'casa-source/casatools/casacore/tables/Tables/BaseTabIter.cc', 'casa-source/casatools/casacore/tables/TaQL/TaQLShow.cc',
                    'casa-source/casatools/casacore/tables/Tables/ColumnSet.cc', 'casa-source/casatools/casacore/casa/OS/Directory.cc',
                    'casa-source/casatools/casacore/casa/IO/FilebufIO.cc', 'casa-source/casatools/casacore/casa/Arrays/IPosition.cc',
-                   'casa-source/casatools/casacore/casa/Arrays/IPosition2.cc', 'casa-source/casatools/casacore/tables/DataMan/ISMBucket.cc',
+#                  'casa-source/casatools/casacore/casa/Arrays/IPosition2.cc',
+                   'casa-source/casatools/casacore/tables/DataMan/ISMBucket.cc',
                    'casa-source/casatools/casacore/casa/Logging/LogFilter.cc',
                    'casa-source/casatools/casacore/casa/Logging/LogFilterInterface.cc',
                    'casa-source/casatools/casacore/casa/IO/FiledesIO.cc', 'casa-source/casatools/casacore/measures/Measures/MBaseline.cc',
@@ -417,7 +423,8 @@ CASAWVR_SOURCE = [ 'casa-source/casa5/code/air_casawvr/cmdline/wvrgcal.cpp', 'ca
                    'casa-source/casatools/casacore/tables/DataMan/TSMColumn.cc', 'casa-source/casatools/casacore/tables/DataMan/TSMIdColumn.cc',
                    'casa-source/casatools/casacore/tables/DataMan/TSMDataColumn.cc', 'casa-source/casatools/casacore/tables/DataMan/TSMCoordColumn.cc',
                    'casa-source/casatools/casacore/casa/IO/MultiHDF5.cc', 'casa-source/casatools/casacore/tables/Tables/NullTable.cc',
-                   'casa-source/casatools/casacore/tables/Tables/RefColumn.cc', 'casa-source/casatools/casacore/casa/BasicSL/RegexBase.cc',
+                   'casa-source/casatools/casacore/tables/Tables/RefColumn.cc',
+#                  'casa-source/casatools/casacore/casa/BasicSL/RegexBase.cc',
                    'casa-source/casatools/casacore/tables/DataMan/TSMOption.cc', 'casa-source/casatools/casacore/tables/TaQL/TaQLStyle.cc',
                    'casa-source/casatools/casacore/tables/Tables/TableAttr.cc', 'casa-source/casatools/casacore/casa/HDF5/HDF5Object.cc',
                    'casa-source/casatools/casacore/casa/HDF5/HDF5Record.cc', 'casa-source/casatools/casacore/casa/HDF5/HDF5DataSet.cc',
@@ -427,7 +434,7 @@ CASAWVR_SOURCE = [ 'casa-source/casa5/code/air_casawvr/cmdline/wvrgcal.cpp', 'ca
                    'casa-source/casatools/casacore/casa/HDF5/HDF5HidMeta.cc', 'casa-source/casatools/casacore/tables/Tables/TableInfo.cc',
                    'casa-source/casatools/casacore/casa/HDF5/HDF5Error.cc', 'casa-source/casatools/casacore/tables/Tables/TableLock.cc',
                    'casa-source/casatools/casacore/tables/Tables/TabPath.cc', 'casa-source/casatools/casacore/ms/MSSel/MSSSpwErrorHandler.cc',
-                   'casa-source/casatools/casacore/casa/Utilities/cregex.cc',
+#                  'casa-source/casatools/casacore/casa/Utilities/cregex.cc',
                    'casa-source/casatools/casacore/casa/aips.cc',
                    #### compile asdm storage manager into executable
                    'casa-source/casa5/code/asdmstman/AsdmColumn.cc', 'casa-source/casa5/code/asdmstman/AsdmStMan.cc',
@@ -811,6 +818,26 @@ if __name__ == '__main__':
 
     tasks = output.split( )
     generate_pyinit(moduledir,tasks)
+
+    print("generating gotask wrappers...\n");
+    mkpath(os.path.join(moduledir,'gotasks'));
+    go_dir = os.path.join(moduledir,'gotasks')
+    go_init = os.path.join(go_dir,'__init__.py')
+    with open(go_init, "w") as fd:
+        fd.write("""###########################################################################\n""")
+        fd.write("""########################## generated by setup.py ##########################\n""")
+        fd.write("""###########################################################################\n""")
+
+    proc = Popen( [tools_config['build.compiler.xml-casa'], "gotask-imp-module=almatasks", "output-gotask=%s" % go_dir, "-gotask"] + xml_files,
+                  stdout=subprocess.PIPE )
+
+    (output, error) = pipe_decode(proc.communicate( ))
+
+    exit_code = proc.wait( )
+
+    if exit_code != 0:
+        sys.exit('python gotask generation failed')
+    
 
     for f in private_scripts:
         copy2(f,privatedir)
