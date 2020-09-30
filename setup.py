@@ -72,8 +72,6 @@ except:
     print("cannot find CASAtools (https://open-bitbucket.nrao.edu/projects/CASA/repos/CASAtools/browse) in PYTHONPATH")
     os._exit(1)
 
-assert tools_config['option.boost'] != 0, "Boost framework is required to build ALMAtasks"
-
 from setuptools import setup, find_packages
 from distutils.ccompiler import new_compiler, CCompiler
 from distutils.sysconfig import customize_compiler
@@ -542,11 +540,12 @@ def customize_compiler(self, verbose=False):
     cflags = [item for sublist in cflags for item in sublist]         ### python has not yet hit upon a flatten function...
     ldflags = list(map(lambda pair: pair[1],filter(lambda pair: pair[0].startswith('build.flags.link'),tools_config.items())))
     ldflags = clean_args([item for sublist in ldflags for item in sublist])         ### python has not yet hit upon a flatten function...
+    ldflags = ldflags + [ '-L%s/local/lib' % os.getcwd( ) ]
     ld_dirs = list(set(map(lambda s: s[2:],filter(lambda s: s.startswith("-L"),ldflags))))
     if 'build.python.numpy_dir' in tools_config and len(tools_config['build.python.numpy_dir']) > 0:
         cflags.insert(0,'-I' + tools_config['build.python.numpy_dir'])       ### OS could have different version of python in
                                                                       ###     /usr/include (e.g. rhel6)
-    new_compiler_cxx = ccache + [tools_config['build.compiler.cxx'], '-g', '-std=c++11','-Ibinding/include','-Igenerated/include','-Ilibcasatools/generated/include','-Icasa-source/casa5/code','-Icasa-source','-Icasa-source/casatools/casacore', '-Iinclude', '-Isakura-source/src'] + cflags + default_compiler_so[1:]
+    new_compiler_cxx = ccache + [tools_config['build.compiler.cxx'], '-g', '-std=c++11', '-I%s/local/include' % os.getcwd( ), '-Ibinding/include','-Igenerated/include','-Ilibcasatools/generated/include','-Icasa-source/casa5/code','-Icasa-source','-Icasa-source/casatools/casacore', '-Iinclude', '-Isakura-source/src'] + cflags + default_compiler_so[1:]
     new_compiler_cc = ccache + [tools_config['build.compiler.cc'], '-g', '-Ibinding/include','-Igenerated/include','-Ilibcasatools/generated/include','-Icasa-source/casa5/code','-Icasa-source','-Icasa-source/casatools/casacore', '-Iinclude', 'sakura-source/src'] + cflags + default_compiler_so[1:]
     new_compiler_fortran = [tools_config['build.compiler.fortran']]
 
@@ -602,11 +601,18 @@ def customize_compiler(self, verbose=False):
         if verbose:
             print("linking %s" % output_filename)
 
-        superld( target_desc, objects, output_filename, output_dir,
-                 None if libraries is None else [library_mangle[l] if l in library_mangle else l for l in libraries],
-                 ld_dirs if library_dirs is None else ["-L/tmp"]+ld_dirs+library_dirs+local_library_path, runtime_library_dirs, export_symbols,
-#                 debug, ["-L/opt/local/lib"], extra_postargs, build_temp, target_lang )
-                 debug, extra_preargs, extra_postargs, build_temp, target_lang )
+        if target_desc == "executable":
+            try:
+                cxx = [ props['build.compiler.cxx'] ] 
+                self.spawn(cxx + [ '-o', output_filename, '-fopenmp' ] + objects + [ os.path.join('local', 'lib', l) for l in ['libboost_filesystem.a', 'libboost_program_options.a', 'libboost_random.a', 'libboost_regex.a', 'libboost_system.a', 'libgsl.a', 'libgslcblas.a'] ] + [ "-l%s" % x for x in libraries if not any([f in x for f in ['boost', 'gsl']]) ] + [ "-L%s" % l for l in ld_dirs ])
+            except DistutilsExecError as msg:
+                raise CompileError(msg)
+        else:
+            superld( target_desc, objects, output_filename, output_dir,
+                     None if libraries is None else [library_mangle[l] if l in library_mangle else l for l in libraries],
+                     ld_dirs if library_dirs is None else ["-L/tmp"]+ld_dirs+library_dirs+local_library_path, runtime_library_dirs, export_symbols,
+#                    debug, ["-L/opt/local/lib"], extra_postargs, build_temp, target_lang )
+                     debug, extra_preargs, None, build_temp, target_lang )
 
         self.compiler_so = default_compiler_so
         self.linker_so = default_linker_so
@@ -777,6 +783,16 @@ def all_files( dir ):
     return acc
 
 if __name__ == '__main__':
+
+    if not os.path.exists('local'):
+        print("building third party packages (boost and gsl), this will take several minutes...")
+        proc = Popen( [ "scripts/build-tpp" ], stdout=PIPE, stderr=PIPE )
+        out,err = pipe_decode(proc.communicate( ))
+        print(out)
+        exit_code = proc.wait( )
+        if exit_code != 0:
+            sys.exit('installing third party packages failed')
+
     generate_version_file("generated/source/version.cc")
     generate_lex(CASACORE_LEX)
     generate_yacc(CASACORE_YACC)
@@ -797,7 +813,7 @@ if __name__ == '__main__':
         rpath = [ '-Wl,-rpath,$ORIGIN/../lib']
         archflags = [ ]
 
-    cc.link( CCompiler.EXECUTABLE, objs, os.path.join(bindir,"wvrgcal"), libraries=["boost_program_options-mt", "lapack", "blas", "pthread", "dl"], extra_preargs=props['build.flags.link.openmp'] + rpath + props['build.flags.link.gsl'] + archflags )
+    cc.link( CCompiler.EXECUTABLE, objs, os.path.join(bindir,"wvrgcal"), libraries=["boost_program_options", "lapack", "blas", "pthread", "dl"], extra_preargs=props['build.flags.link.openmp'] + rpath + props['build.flags.link.gsl'] + archflags )
     if isexe("scripts/mod-closure") and not os.path.isfile(".created.closure"):
         print("generating module closure...")
         if Proc([ "scripts/mod-closure", moduledir, "lib=%s" % libdir ]) != 0:

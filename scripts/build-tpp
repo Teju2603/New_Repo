@@ -1,0 +1,105 @@
+#!/usr/bin/perl
+
+use File::Path qw( make_path );
+use File::Basename;
+use File::Find;
+use Cwd 'abs_path';
+use Cwd 'getcwd';
+
+$installdir = abs_path(dirname(abs_path($0)) . "/..") . "/local";
+die "install directory already exists: $installdir\n" if -e $installdir;
+die "could not create install directory: $installdir\n" unless make_path($installdir);
+
+$tardir = abs_path(abs_path($0) . ".src");
+$tarboost = "$tardir/boost_1_53_0.tar.xz";
+$targsl = "$tardir/gsl-2.5.tar.xz";
+$srcboost = "boost_1_53_0";
+$srcgsl = "gsl-2.5";
+
+die "cannot find boost tar file: $tarboost" unless -f $tarboost;
+die "cannot find gsl tar file: $targsl" unless -f $targsl;
+
+print "---------------------------------------------------------------------------\n";
+print "building gsl\n";
+print "---------------------------------------------------------------------------\n";
+make_path("$installdir/src") if ! -e "$installdir/src";
+chdir("$installdir/src") or die "couldn't change to build directory";
+open( TAR, "tar -Jxf $targsl 2>&1 |" ) or die "failed to start unpack of gsl tar file: $targsl";
+while ( <TAR> ) {
+    print "[TAR]\t$_";
+}
+close(TAR) or die $! ? "error closing pipe: $!" : "unpacking failed with exit status: $?";
+
+chdir("$srcgsl") or die "gsl source directory not found: $srcgsl";
+open( CONFIG, "./configure --enable-static --prefix=$installdir 2>&1 |" ) or die "failed to start gsl configure";
+while ( <CONFIG> ) {
+    print "[CONFIG]\t$_";
+}
+close(CONFIG) or die $! ? "error closing pipe: $!" : "configuration of gsl failed with exit status: $?";
+
+print "[PATCH]\tpatching gsl Makefiles...\n";
+$patch_makefiles = sub {
+    if ( $_ eq "Makefile" ) {
+        open( IN, "Makefile" ) or die "couldn't open Makefile";
+        local $/;                                                      ## turn of line breaking
+        my $contents = <IN>;
+        $contents =~ s|\$\(CC\) \$\(DEFS\)|\$(CC) \$(DEFS) -fPIC|g;
+        close( IN ) or die $! ? "error closing file: $!" : "reading Makefile failed with exit status: $?";
+
+        open( OUT, "> Makefile" ) or die "couldn't open Makefile for writing";
+        print OUT $contents;
+        close( OUT ) or die $! ? "error closing file: $!" : "writing Makefile failed with exit status: $?";
+    }
+};
+find( { wanted => $patch_makefiles }, "." );
+
+open( BUILD, "make 2>&1 |" ) or die "failed to start build";
+while ( <BUILD> ) {
+    print "[BUILD]\t$_";
+}
+close(BUILD) or die $! ? "error closing pipe: $!" : "building failed with exit status: $?";
+
+open( INSTALL, "make install 2>&1 |" ) or die "failed to start install";
+while ( <INSTALL> ) {
+    print "[INSTALL]\t$_";
+}
+close(INSTALL) or die $! ? "error closing pipe: $!" : "install failed with exit status: $?";
+
+print "---------------------------------------------------------------------------\n";
+print "building boost\n";
+print "---------------------------------------------------------------------------\n";
+make_path("$installdir/src") if ! -e "$installdir/src";
+chdir("$installdir/src") or die "couldn't change to build directory";
+open( TAR, "tar -Jxf $tarboost 2>&1 |" ) or die "failed to start unpack of boost tar file: $tarboost";
+while ( <TAR> ) {
+    print "[TAR]\t$_";
+}
+close(TAR) or die $! ? "error closing pipe: $!" : "unpacking failed with exit status: $?";
+
+chdir("$srcboost") or die "boost source directory not found: $srcboost";
+open( CONFIG, "./bootstrap.sh --prefix=$installdir --with-libraries=filesystem,regex,system,random,program_options 2>&1 |") or
+    die "failed to start boost bootstrap";
+while ( <CONFIG> ) {
+    print "[CONFIG]\t$_";
+}
+close(CONFIG) or die $! ? "error closing pipe: $!" : "configuration of boost failed with exit status: $?";
+
+open( BUILD, "./b2 2>&1 |" ) or die "failed to start build";
+while ( <BUILD> ) {
+    print "[BUILD]\t$_";
+}
+close(BUILD) or die $! ? "error closing pipe: $!" : "building failed with exit status: $?";
+
+open( INSTALL, "./b2 install 2>&1 |" ) or die "failed to start install";
+while ( <INSTALL> ) {
+    print "[INSTALL]\t$_";
+}
+close(INSTALL) or die $! ? "error closing pipe: $!" : "install failed with exit status: $?";
+
+print "---------------------------------------------------------------------------\n";
+print "removing shared libraries\n";
+print "---------------------------------------------------------------------------\n";
+$remove_shared = sub {
+    if ( m@\.so|\.dylib|\.la$|\.pc$@ ) { unlink($_); }
+};
+find( { wanted => $remove_shared }, "$installdir/lib" );
