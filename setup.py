@@ -604,7 +604,9 @@ def customize_compiler(self, verbose=False):
         if target_desc == "executable":
             try:
                 cxx = [ props['build.compiler.cxx'] ] 
-                self.spawn(cxx + [ '-o', output_filename, '-fopenmp' ] + objects + [ os.path.join('local', 'lib', l) for l in ['libboost_filesystem.a', 'libboost_program_options.a', 'libboost_random.a', 'libboost_regex.a', 'libboost_system.a', 'libgsl.a', 'libgslcblas.a'] ] + [ "-l%s" % x for x in libraries if not any([f in x for f in ['boost', 'gsl']]) ] + [ "-L%s" % l for l in ld_dirs ])
+                link_line = cxx + [ '-o', output_filename, '-fopenmp' ] + rpath + objects + [ os.path.join('local', 'lib', l) for l in ['libboost_filesystem.a', 'libboost_program_options.a', 'libboost_random.a', 'libboost_regex.a', 'libboost_system.a', 'libgsl.a', 'libgslcblas.a'] ] + [ "-l%s" % x for x in libraries if not any([f in x for f in ['boost', 'gsl']]) ] + [ "-L%s" % l for l in ld_dirs ]
+                print(link_line)
+                self.spawn(link_line)
             except DistutilsExecError as msg:
                 raise CompileError(msg)
         else:
@@ -799,18 +801,20 @@ if __name__ == '__main__':
     tmpdir = os.path.join('build', distutils_dir_name('temp'))
     moduledir = os.path.join('build', distutils_dir_name('lib'), module_name)
     privatedir = os.path.join(moduledir,"private")
-    bindir = os.path.join(privatedir, "bin")
-    libdir = os.path.join(privatedir, "lib")
+    bindir = os.path.join(moduledir, "__bin__")
+    libdir = os.path.join(moduledir, "__lib__")
     mkpath(bindir)
+    mkpath(libdir)
+    mkpath(privatedir)
     cc = new_compiler("posix", verbose=True)
     customize_compiler(cc,True)
     objs = cc.compile( CASAWVR_SOURCE, os.path.join(tmpdir,"wvrgcal") )
     if sys.platform == 'darwin':
         ### need to get '/opt/local/lib/gcc5' from gfortran directly
-        rpath = [ '-Wl,-rpath,@loader_path/../lib' ]
+        rpath = [ '-Wl,-rpath,@loader_path/../__lib__' ]
         archflags = ['-L/opt/local/lib/gcc5']
     else:
-        rpath = [ '-Wl,-rpath,$ORIGIN/../lib']
+        rpath = [ '-Wl,-rpath,$ORIGIN/../__lib__']
         archflags = [ ]
 
     cc.link( CCompiler.EXECUTABLE, objs, os.path.join(bindir,"wvrgcal"), libraries=["boost_program_options", "lapack", "blas", "pthread", "dl"], extra_preargs=props['build.flags.link.openmp'] + rpath + props['build.flags.link.gsl'] + archflags )
@@ -879,6 +883,6 @@ if __name__ == '__main__':
                cmdclass=setup_config,
                package_dir = { '' : os.path.join('build', distutils_dir_name('lib')) },
                packages=[ "almatasks", "almatasks.private" ],
-               package_data={'almatasks': all_files('almatasks/private/bin') + all_files('almatasks/private/lib')},
+               package_data= { 'almatasks': all_files('almatasks/__lib__') + all_files('almatasks/__bin__') },
                install_requires=["casatasks", "casatools"]
         )
