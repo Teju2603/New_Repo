@@ -1,0 +1,87 @@
+#!/usr/bin/perl
+use Cwd qw(abs_path getcwd);
+use POSIX;
+use File::Basename;
+use File::Fetch;
+use File::Path qw(make_path remove_tree);
+use Config;
+
+#Fetch failed! HTTP response: 500 Internal Server Error [500 Can't verify SSL peers without knowing which Certificate Authorities to trust] at scripts/create-app line 62.
+$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
+
+$exe = abs_path($0);
+$path = abs_path(dirname($exe));
+$java = '/usr/bin/java';
+$jarfile_name = "create-app-assembly-1.10.jar";
+
+### install path
+$distro_jarfile = $jarfile = "$path/java/$jarfile_name";
+if ( ! -e $jarfile ) {
+    ### development path
+    $jarfile = "$path/../target/scala-2.12/$jarfile_name";
+    if ( ! -e $jarfile ) {
+        $jarfile = $distro_jarfile;
+        ### pull from download url
+        my $jardir = dirname($jarfile);
+        make_path($jardir);
+        my $ff = File::Fetch->new(uri => 'http://casa.nrao.edu/download/devel/xml-casa/java/create-app-assembly-1.10.jar');
+        my $where = $ff->fetch( to => $jardir );
+    }
+}
+die "configuration error, cannot find jar file ($jarfile_name)" unless -e $jarfile;
+
+
+@args = ( basename($java), '-jar', $jarfile );
+push(@args,@ARGV);
+#exec { $java } @args;
+
+$appdir = "";
+die "cannot fork: $!" unless defined($pid = open(JAVA, "-|"));
+if ($pid) {   # parent
+    while (my $line = <JAVA>) {
+        print "$line";
+        if ( $line =~ m|^created app directory\s+(.*)$| ) {
+            $appdir = $1;
+        }
+    }
+    close(JAVA)               or warn "kid exited $?";
+} else {
+    # reconfigure, then
+    exec { $java } @args or die "can't exec program: $!";
+}
+
+
+if ( $appdir ) {
+
+    ##
+    ## create linux application...
+    ##
+    if ( $Config{osname} eq "linux" ) {
+        $appimage_creator_name = "appimagetool-x86_64.AppImage";
+        $appimage_creator = "$path/linux/$appimage_creator_name";
+
+        if ( ! -e $appimage_creator ) {
+            ### pull from download url
+            my $appimage_creator_dir = dirname($appimage_creator);
+            make_path($appimage_creator_dir);
+            my $ff = File::Fetch->new(uri => 'http://github.com/AppImage/AppImageKit/releases/download/10/appimagetool-x86_64.AppImage');
+            my $where = $ff->fetch( to => $appimage_creator_dir );
+            if ( -e $appimage_creator ) {
+                chmod( 0755, $appimage_creator );
+            }
+        }
+
+        die "configuration error, cannot find app image creator ($appimage_creator_name)" unless -e $appimage_creator;
+
+        my $creator = abs_path($appimage_creator);
+        my $app = basename($appdir);
+        my $workdir = dirname($appdir);
+
+        chdir($workdir);
+        my @args = ( basename($creator), $app );
+        exec { $creator } @args or die "can't exec app creation: $!";
+    }
+
+} else {
+    die "sorry, creation of the app directory seems to have failed...";
+}

@@ -472,6 +472,7 @@ module_cflags = { '/casacore/': ['-DCFITSIO_VERSION_MAJOR=3', '-DCFITSIO_VERSION
 
 xml_xlate = { 'casa-source/casa5/gcwrap/tasks/wvrgcal.xml': 'xml/wvrgcal.xml' }
 xml_files = [ 'xml/wvrgcal.xml' ]
+public_files = [ 'src/tasks/LICENSE.txt' ]
 private_scripts = [ 'src/tasks/task_wvrgcal.py', 'src/scripts/almahelpers.py' ]
 private_modules = [  ]
 
@@ -800,35 +801,75 @@ if __name__ == '__main__':
     generate_yacc(CASACORE_YACC)
     tmpdir = os.path.join('build', distutils_dir_name('temp'))
     moduledir = os.path.join('build', distutils_dir_name('lib'), module_name)
+    buildbindir = os.path.join('build', distutils_dir_name('bin'))
+    appdir = os.path.join(buildbindir, "wvrgcal.app")
     privatedir = os.path.join(moduledir,"private")
-    bindir = os.path.join(moduledir, "__bin__")
-    libdir = os.path.join(moduledir, "__lib__")
-    mkpath(bindir)
-    mkpath(libdir)
+    appbindir = os.path.join(appdir, "usr", "bin")
+    applibdir = os.path.join(appdir, "usr", "lib")
+    mkpath(appbindir)
+    mkpath(applibdir)
     mkpath(privatedir)
     cc = new_compiler("posix", verbose=True)
     customize_compiler(cc,True)
     objs = cc.compile( CASAWVR_SOURCE, os.path.join(tmpdir,"wvrgcal") )
     if sys.platform == 'darwin':
         ### need to get '/opt/local/lib/gcc5' from gfortran directly
-        rpath = [ '-Wl,-rpath,@loader_path/../__lib__' ]
+        rpath = [ '-Wl,-rpath,@loader_path/../lib' ]
         archflags = ['-L/opt/local/lib/gcc5']
     else:
-        rpath = [ '-Wl,-rpath,$ORIGIN/../__lib__']
+        rpath = [ '-Wl,-rpath,$ORIGIN/../lib']
         archflags = [ ]
 
-    cc.link( CCompiler.EXECUTABLE, objs, os.path.join(bindir,"wvrgcal"), libraries=["boost_program_options", "lapack", "blas", "pthread", "dl"], extra_preargs=props['build.flags.link.openmp'] + rpath + props['build.flags.link.gsl'] + archflags )
+    cc.link( CCompiler.EXECUTABLE, objs, os.path.join(appbindir,"wvrgcal"), libraries=["boost_program_options", "lapack", "blas", "pthread", "dl"], extra_preargs=props['build.flags.link.openmp'] + rpath + props['build.flags.link.gsl'] + archflags )
     if isexe("scripts/mod-closure") and not os.path.isfile(".created.closure"):
         print("generating module closure...")
-        if Proc([ "scripts/mod-closure", moduledir, "lib=%s" % libdir ]) != 0:
+        if Proc([ "scripts/mod-closure", appdir, "lib=%s" % applibdir ]) != 0:
             sys.exit("\tclosure generation failed...")
         open(".created.closure",'a').close( )
+
+    for f in public_files:
+        copy2(f,moduledir)
+
+    for f in private_scripts:
+        copy2(f,privatedir)
+
+    for m in private_modules:
+        tgt = os.path.join(privatedir,os.path.basename(m))
+        copy_tree(m,tgt)
+
+    modbin = os.path.join(moduledir,"__bin__")
+    mkpath(modbin)
+    if not isexe("scripts/create-app"):
+        sys.exit("\tcannot find create-app script...")
+
+    if Proc([ "scripts/create-app", "--no-data", "name=wvrgcal", "exe=%s/wvrgcal" % appbindir, \
+              "app=%s" % appdir, "lib=%s" % applibdir, "tgt=%s" % ("macosx" if sys.platform == 'darwin' else "linux"), "pfx=" ]) != 0:
+        sys.exit("\tpackaged app creation failed...")
+
+    if sys.platform == 'darwin':
+        sys.exit("\toops, we're not there yet...")
+    else:
+        appimage_name = "wvrgcal-x86_64.AppImage"
+        appimage = os.path.join(buildbindir,appimage_name)
+        if not os.path.isfile(appimage):
+            sys.exit("\tcannot find wvrgcal AppImage")
+        copy2(appimage,modbin)
+        taskfile = os.path.join(privatedir,"task_wvrgcal.py")
+        if not os.path.isfile(taskfile):
+            sys.exit("\tcannot find wvrgcal task file to patch")
+        fin = open(taskfile,"rt")
+        fin_contents = fin.read( )
+        fin_contents = fin_contents.replace("@WVRGCAL@","'%s'" % appimage_name)
+        fin.close( )
+        fout = open(taskfile,"wt")
+        fout.write(fin_contents)
+        fout.close( )
 
     upgrade_xml(xml_xlate)
     print("generating task python files...")
     proc = Popen( [tools_config['build.compiler.xml-casa'], "output-task=%s" % moduledir, "-task"] + xml_files,
                   stdout=subprocess.PIPE )
-
+    
     (output, error) = pipe_decode(proc.communicate( ))
 
     exit_code = proc.wait( )
@@ -856,15 +897,7 @@ if __name__ == '__main__':
     exit_code = proc.wait( )
 
     if exit_code != 0:
-        sys.exit('python gotask generation failed')
-    
-
-    for f in private_scripts:
-        copy2(f,privatedir)
-
-    for m in private_modules:
-        tgt = os.path.join(privatedir,os.path.basename(m))
-        copy_tree(m,tgt)
+        sys.exit('python gotask generation failed')    
 
     if len(setup_config) > 0:
         setup( name=module_name,
@@ -882,7 +915,7 @@ if __name__ == '__main__':
                long_description="ALMA tasks",
                cmdclass=setup_config,
                package_dir = { '' : os.path.join('build', distutils_dir_name('lib')) },
-               packages=[ "almatasks", "almatasks.private" ],
-               package_data= { 'almatasks': all_files('almatasks/__lib__') + all_files('almatasks/__bin__') },
+               packages=[ "almatasks", "almatasks.private", 'almatasks.gotasks' ],
+               package_data= { 'almatasks': all_files('almatasks/__bin__') + ["LICENSE.txt"] },
                install_requires=["casatasks", "casatools"]
         )

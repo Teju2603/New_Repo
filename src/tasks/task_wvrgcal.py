@@ -245,7 +245,7 @@ def wvrgcal(vis=None, caltable=None, toffset=None, segsource=None,
         if (0.<=mingoodfrac and mingoodfrac<=1.):
             execute_string+= ' --mingoodfrac ' + str(mingoodfrac)
 
-        theexecutable = os.path.join(os.path.abspath(os.path.dirname(__file__)), '__bin__', 'wvrgcal')
+        theexecutable = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), '__bin__', @WVRGCAL@ )
         execute_string = theexecutable+' '+execute_string
 
         casalog.post('Running '+theexecutable+' standalone invoked as:')
