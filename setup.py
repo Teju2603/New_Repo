@@ -774,6 +774,12 @@ class BinaryDistribution(Distribution):
     def has_ext_modules(foo):
         return True
 
+class BdistWheel(bdist_wheel):
+    def finalize_options(self):
+        bdist_wheel.finalize_options(self)
+        # Mark us as not a pure python package
+        self.root_is_pure = False
+
 def all_files( dir ):
     acc = [ ]
     initial_dir = os.getcwd( )
