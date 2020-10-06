@@ -86,11 +86,9 @@ from distutils.util import spawn
 from setuptools.dist import Distribution
 
 setup_config = {}
-try:
-    from wheel.bdist_wheel import bdist_wheel
-    setup_config['bdist_wheel'] = bdist_wheel
-except ImportError:
-    pass  # custom command not needed if wheel is not installed
+
+from wheel.bdist_wheel import bdist_wheel
+
 
 module_name = 'almatasks'
 
@@ -146,6 +144,28 @@ def compute_version( ):
 almatasks_version = '%d.%d.%d%s' % (almatasks_major,almatasks_minor,almatasks_patch,dirty)
 if devbranchversion !="":
     almatasks_version = '%d.%d.%da%sdev%s%s' % (almatasks_major,almatasks_minor,almatasks_patch,devbranchversion,devbranchrevision,dirty)
+
+class BdistWheel(bdist_wheel):
+
+    user_options = bdist_wheel.user_options + [
+        ('build=', None, 'specify build number') ]
+
+    def initialize_options(self):
+        bdist_wheel.initialize_options(self)
+        self.build=almatasks_version
+
+    def finalize_options(self):
+        bdist_wheel.finalize_options(self)
+        # Mark us as not a pure python package
+        self.root_is_pure = False
+
+    def get_tag(self):
+        python, abi, plat = bdist_wheel.get_tag(self)
+        # We don't contain any python source
+        python, abi = 'py3', 'none'
+        return python, abi, plat
+
+setup_config['bdist_wheel'] = BdistWheel
 
 CASACORE_LEX=[ 'casa-source/casatools/casacore/tables/TaQL/RecordGram.ll',
                'casa-source/casatools/casacore/tables/TaQL/TableGram.ll',
@@ -763,7 +783,7 @@ class casa_build_ext(build_ext):
         build_ext.build_extensions(self)
 
 class BinaryDistribution(Distribution):
-    user_options = bdist_wheel.user_options + [
+    user_options = BdistWheel.user_options + [
         ('build=', None, 'specify build number') ]
 
     def initialize_options(self):
@@ -773,12 +793,6 @@ class BinaryDistribution(Distribution):
     """Distribution which always forces a binary package with platform name"""
     def has_ext_modules(foo):
         return True
-
-class BdistWheel(bdist_wheel):
-    def finalize_options(self):
-        bdist_wheel.finalize_options(self)
-        # Mark us as not a pure python package
-        self.root_is_pure = False
 
 def all_files( dir ):
     acc = [ ]
