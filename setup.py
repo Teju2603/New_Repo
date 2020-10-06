@@ -162,7 +162,7 @@ class BdistWheel(bdist_wheel):
     def get_tag(self):
         python, abi, plat = bdist_wheel.get_tag(self)
         # We don't contain any python source
-        python, abi = 'py3', 'none'
+        python, abi = 'py3', 'manylinux2010'
         return python, abi, plat
 
 setup_config['bdist_wheel'] = BdistWheel
