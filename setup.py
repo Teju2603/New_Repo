@@ -462,13 +462,12 @@ CASAWVR_SOURCE = [ 'casa-source/casa5/code/air_casawvr/cmdline/wvrgcal.cpp', 'ca
 ]
 
 platform_cflags = { 'darwin': [ ],
-                    'linux2': [ '-fcx-fortran-rules' ],
-                    'linux': [ '-fcx-fortran-rules' ],
-#####
-#####  these cause a segmentation violation in test_setjy
-#####
-#                    'linux2': [ '-fopenmp', '-fcx-fortran-rules' ],
-#                    'linux': [ '-fopenmp', '-fcx-fortran-rules' ],
+                    'linux2': [ '-fopenmp', '-fcx-fortran-rules' ],
+                    'linux': [ '-fopenmp', '-fcx-fortran-rules' ],
+};
+platform_ldflags = { 'darwin': [ ],
+                     'linux2': [ '-fopenmp' ],
+                     'linux': [ '-fopenmp' ],
 };
 
 module_cflags = { '/casacore/': ['-DCFITSIO_VERSION_MAJOR=3', '-DCFITSIO_VERSION_MINOR=370', '-DCASA_BUILD=1'\
@@ -492,6 +491,7 @@ module_cflags = { '/casacore/': ['-DCFITSIO_VERSION_MAJOR=3', '-DCFITSIO_VERSION
 
 xml_xlate = { 'casa-source/casa5/gcwrap/tasks/wvrgcal.xml': 'xml/wvrgcal.xml' }
 xml_files = [ 'xml/wvrgcal.xml' ]
+public_files = [ 'src/tasks/LICENSE.txt' ]
 private_scripts = [ 'src/tasks/task_wvrgcal.py', 'src/scripts/almahelpers.py' ]
 private_modules = [  ]
 
@@ -624,7 +624,7 @@ def customize_compiler(self, verbose=False):
         if target_desc == "executable":
             try:
                 cxx = [ props['build.compiler.cxx'] ] 
-                link_line = cxx + [ '-o', output_filename, '-fopenmp' ] + rpath + objects + [ os.path.join('local', 'lib', l) for l in ['libboost_filesystem.a', 'libboost_program_options.a', 'libboost_random.a', 'libboost_regex.a', 'libboost_system.a', 'libgsl.a', 'libgslcblas.a'] ] + [ "-l%s" % x for x in libraries if not any([f in x for f in ['boost', 'gsl']]) ] + [ "-L%s" % l for l in ld_dirs ]
+                link_line = cxx + [ '-o', output_filename ] + platform_ldflags[sys.platform] + rpath + objects + [ os.path.join('local', 'lib', l) for l in ['libboost_filesystem.a', 'libboost_program_options.a', 'libboost_random.a', 'libboost_regex.a', 'libboost_system.a', 'libgsl.a', 'libgslcblas.a'] ] + [ "-l%s" % x for x in libraries if not any([f in x for f in ['boost', 'gsl']]) ] + [ "-L%s" % l for l in ld_dirs ]
                 print(link_line)
                 self.spawn(link_line)
             except DistutilsExecError as msg:
@@ -877,7 +877,9 @@ if __name__ == '__main__':
 
     if exit_code != 0:
         sys.exit('python gotask generation failed')
-    
+
+    for f in public_files:
+        copy2(f,moduledir)
 
     for f in private_scripts:
         copy2(f,privatedir)
@@ -903,6 +905,8 @@ if __name__ == '__main__':
                cmdclass=setup_config,
                package_dir = { '' : os.path.join('build', distutils_dir_name('lib')) },
                packages=[ "almatasks", "almatasks.private" ],
-               package_data= { 'almatasks': all_files('almatasks/__lib__') + all_files('almatasks/__bin__') },
+               package_data= { 'almatasks': all_files('almatasks/__lib__') + \
+                                            all_files('almatasks/__bin__') + \
+                                            ["LICENSE.txt"] },
                install_requires=["casatasks", "casatools"]
         )
