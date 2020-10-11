@@ -884,6 +884,10 @@ if __name__ == '__main__':
     for f in private_scripts:
         copy2(f,privatedir)
 
+    ### create empty __init__.py for private
+    with open(os.path.join(privatedir,'__init__.py'), 'w') as fp: 
+        pass
+
     for m in private_modules:
         tgt = os.path.join(privatedir,os.path.basename(m))
         copy_tree(m,tgt)
