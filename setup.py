@@ -85,7 +85,6 @@ from distutils.core import Command
 from distutils.util import spawn
 from setuptools.dist import Distribution
 
-setup_config = {}
 
 from wheel.bdist_wheel import bdist_wheel
 
@@ -161,11 +160,7 @@ class BdistWheel(bdist_wheel):
 
     def get_tag(self):
         python, abi, plat = bdist_wheel.get_tag(self)
-        # We don't contain any python source
-        #python, abi = 'py3', 'manylinux2010'
         return python, abi, plat
-
-setup_config['bdist_wheel'] = BdistWheel
 
 CASACORE_LEX=[ 'casa-source/casatools/casacore/tables/TaQL/RecordGram.ll',
                'casa-source/casatools/casacore/tables/TaQL/TableGram.ll',
@@ -790,7 +785,9 @@ class BinaryDistribution(Distribution):
         self.build = build_number
 
     """Distribution which always forces a binary package with platform name"""
-    def has_ext_modules(foo):
+    def is_pure(self):
+        return False
+    def has_ext_modules(self):
         return True
 
 def all_files( dir ):
@@ -803,6 +800,14 @@ def all_files( dir ):
             acc.append(os.path.join(r,filename))
     os.chdir(initial_dir)
     return acc
+
+from setuptools.command.install import install
+class InstallPlatlib(install):
+    def finalize_options(self):
+        install.finalize_options(self)
+        if self.distribution.has_ext_modules():
+            self.install_lib = self.install_platlib
+
 
 if __name__ == '__main__':
 
@@ -892,25 +897,24 @@ if __name__ == '__main__':
         tgt = os.path.join(privatedir,os.path.basename(m))
         copy_tree(m,tgt)
 
-    if len(setup_config) > 0:
-        setup( name=module_name,
-               version=almatasks_version,
-               maintainer="Darrell Schiebel",
-               maintainer_email="drs@nrao.edu",
-               author="CASA development team",
-               author_email="aips2-request@nrao.edu",
-               url="https://open-bitbucket.nrao.edu/projects/CASA/repos/almatasks/browse",
-               download_url="https://casa.nrao.edu/download/",
-               license="GNU Library or Lesser General Public License (LGPL)",
-               classifiers=[ 'Programming Language :: Python :: 3'],
-               description="ALMA tasks (inc wvrgcal)",
-               distclass=BinaryDistribution,
-               long_description="ALMA tasks",
-               cmdclass=setup_config,
-               package_dir = { '' : os.path.join('build', distutils_dir_name('lib')) },
-               packages=[ "almatasks", "almatasks.private" ],
-               package_data= { 'almatasks': all_files('almatasks/__lib__') + \
-                                            all_files('almatasks/__bin__') + \
-                                            ["LICENSE.txt"] },
-               install_requires=["casatasks", "casatools"]
-        )
+    setup( name=module_name,
+           version=almatasks_version,
+           maintainer="Darrell Schiebel",
+           maintainer_email="drs@nrao.edu",
+           author="CASA development team",
+           author_email="aips2-request@nrao.edu",
+           url="https://open-bitbucket.nrao.edu/projects/CASA/repos/almatasks/browse",
+           download_url="https://casa.nrao.edu/download/",
+           license="GNU Library or Lesser General Public License (LGPL)",
+           classifiers=[ 'Programming Language :: Python :: 3'],
+           description="ALMA tasks (inc wvrgcal)",
+           distclass=BinaryDistribution,
+           long_description="ALMA tasks",
+           cmdclass={ 'bdist_wheel': BdistWheel,'install': InstallPlatlib },
+           package_dir = { '' : os.path.join('build', distutils_dir_name('lib')) },
+           packages=[ "almatasks", "almatasks.private" ],
+           package_data= { 'almatasks': all_files('almatasks/__lib__') + \
+                                        all_files('almatasks/__bin__') + \
+                                        ["LICENSE.txt"] },
+           install_requires=["casatasks", "casatools"]
+    )
