@@ -555,7 +555,7 @@ def customize_compiler(self, verbose=False):
     cflags = [item for sublist in cflags for item in sublist]         ### python has not yet hit upon a flatten function...
     ldflags = list(map(lambda pair: pair[1],filter(lambda pair: pair[0].startswith('build.flags.link'),tools_config.items())))
     ldflags = clean_args([item for sublist in ldflags for item in sublist])         ### python has not yet hit upon a flatten function...
-    ldflags = ldflags + [ '-L%s/local/lib' % os.getcwd( ) ]
+    ldflags = [ '-L%s/local/lib' % os.getcwd( ) ] + ldflags
     ld_dirs = list(set(map(lambda s: s[2:],filter(lambda s: s.startswith("-L"),ldflags))))
     if 'build.python.numpy_dir' in tools_config and len(tools_config['build.python.numpy_dir']) > 0:
         cflags.insert(0,'-I' + tools_config['build.python.numpy_dir'])       ### OS could have different version of python in
