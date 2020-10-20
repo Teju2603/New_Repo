@@ -10,7 +10,9 @@ from casatasks import flagdata, smoothcal, split
 from almatasks import wvrgcal
 import unittest
 ### for testhelper import
-sys.path.append(os.path.abspath(os.path.basename(__file__)))
+mypath = os.path.dirname(os.path.basename(__file__))
+print(mypath)
+sys.path.append(mypath)
 import testhelper as th
 
 tb = table( )
