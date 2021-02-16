@@ -9,9 +9,9 @@ from casatools import ctsys, table
 from casatasks import flagdata, smoothcal, split
 from almatasks import wvrgcal
 import unittest
-### for testhelper import
-sys.path.insert(0,os.path.abspath(os.path.dirname(__file__)))
-import testhelper as th
+
+from casatestutils import testhelper as th
+
 
 tb = table( )
 
@@ -66,23 +66,17 @@ class wvrgcal_test(unittest.TestCase):
     def setUp(self):    
         self.rval = False
 
+        datapath = ctsys.resolve('unittest/wvrgcal/')
+        refpath = ctsys.resolve('unittest/wvrgcal/wvrgcal_reference/')
         if(not os.path.exists(self.vis_f)):
-            rval = os.system('cp -R '+ctsys.resolve('regression/unittest/wvrgcal/input/multisource_unittest.ms')+' .')
-            if rval!=0:
-                raise Exception("Error copying input data")
+            shutil.copytree(os.path.join(datapath,self.vis_f), self.vis_f)
         if(not os.path.exists(self.vis_g)):
-            rval = os.system('cp -R '+ctsys.resolve('regression/unittest/wvrgcal/input/wvrgcal4quasar_10s.ms')+' .')
-            if rval!=0:
-                raise Exception("Error copying input data")
+            shutil.copytree(os.path.join(datapath,self.vis_g), self.vis_g)
         if(not os.path.exists(self.vis_h)):
-            rval = os.system('cp -R '+ctsys.resolve('regression/unittest/wvrgcal/input/uid___A002_X8ca70c_X5_shortened.ms')+' .')
-            if rval!=0:
-                raise Exception("Error copying input data")
+            shutil.copytree(os.path.join(datapath,self.vis_h), self.vis_h)
         for i in range(0,len(self.ref)):
             if(not os.path.exists(self.ref[i])):
-                rval = os.system('cp -R '+ctsys.resolve('regression/unittest/wvrgcal/input/'+self.ref[i])+' .')
-                if rval!=0:
-                    raise Exception("Error copying input data")
+                shutil.copytree(os.path.join(refpath,self.ref[i]), self.ref[i])
 
         if self.makeref:
             print("Will create copies of generated caltables in directory \"newref\"")
@@ -112,7 +106,6 @@ class wvrgcal_test(unittest.TestCase):
         '''Test 2: Testing with a multi-source dataset'''
         myvis = self.vis_f
         os.system('cp -R ' + myvis + ' myinput.ms')
-        os.system('rm -rf '+self.out)
         rvaldict = wvrgcal(vis="myinput.ms",caltable=self.out, wvrflag=['0', '1'], toffset=0.)
 
         if self.makeref:
@@ -145,7 +138,6 @@ class wvrgcal_test(unittest.TestCase):
         '''Test 3:  wvrgcal4quasar_10s.ms, segsource False'''
         myvis = self.vis_g
         os.system('cp -R ' + myvis + ' myinput.ms')
-        os.system('rm -rf '+self.out)
         rvaldict = wvrgcal(vis="myinput.ms",caltable=self.out, segsource=False, toffset=-1.)
 
         if self.makeref:
@@ -164,7 +156,6 @@ class wvrgcal_test(unittest.TestCase):
         '''Test 4:  wvrgcal4quasar_10s.ms, reversespw, segsource False'''
         myvis = self.vis_g
         os.system('cp -R ' + myvis + ' myinput.ms')
-        os.system('rm -rf '+self.out)
         rvaldict = wvrgcal(vis="myinput.ms",caltable=self.out, reversespw='1', segsource=False, toffset=0.)
 
         if self.makeref:
@@ -185,7 +176,6 @@ class wvrgcal_test(unittest.TestCase):
         '''Test 5:  wvrgcal4quasar_10s.ms, smooth, segsource False'''
         myvis = self.vis_g
         os.system('cp -R ' + myvis + ' myinput.ms')
-        os.system('rm -rf '+self.out)
         rvaldict = wvrgcal(vis="myinput.ms",caltable=self.out, smooth='3s', segsource=False, toffset=0.)
 
         print(rvaldict)
@@ -208,7 +198,6 @@ class wvrgcal_test(unittest.TestCase):
         '''Test 6:  wvrgcal4quasar_10s.ms, scale, segsource=False'''
         myvis = self.vis_g
         os.system('cp -R ' + myvis + ' myinput.ms')
-        os.system('rm -rf '+self.out)
         rvaldict = wvrgcal(vis="myinput.ms",caltable=self.out, scale=0.8, segsource=False, toffset=0.)
 
         if self.makeref:
@@ -227,7 +216,6 @@ class wvrgcal_test(unittest.TestCase):
         '''Test 7:  wvrgcal4quasar_10s.ms, tie three sources'''
         myvis = self.vis_g
         os.system('cp -R ' + myvis + ' myinput.ms')
-        os.system('rm -rf '+self.out)
         rvaldict = wvrgcal(vis="myinput.ms", caltable=self.out, tie=['0,1,2'], toffset=0.)
 
         if self.makeref:
@@ -246,7 +234,6 @@ class wvrgcal_test(unittest.TestCase):
         '''Test 8:  wvrgcal4quasar_10s.ms, tie two times two sources'''
         myvis = self.vis_g
         os.system('cp -R ' + myvis + ' myinput.ms')
-        os.system('rm -rf '+self.out)
         rvaldict = wvrgcal(vis="myinput.ms", caltable=self.out, tie=['0,3', '1,2'], toffset=0.)
 
         if self.makeref:
@@ -267,7 +254,6 @@ class wvrgcal_test(unittest.TestCase):
         '''Test 9:  wvrgcal4quasar_10s.ms, sourceflag two sources'''
         myvis = self.vis_g
         os.system('cp -R ' + myvis + ' myinput.ms')
-        os.system('rm -rf '+self.out)
         rvaldict = wvrgcal(vis="myinput.ms", caltable=self.out, sourceflag=['0455-462','0132-169'], toffset=0.)
 
         if self.makeref:
@@ -286,7 +272,6 @@ class wvrgcal_test(unittest.TestCase):
         '''Test 10:  wvrgcal4quasar_10s.ms, statsource, segsource=False'''
         myvis = self.vis_g
         os.system('cp -R ' + myvis + ' myinput.ms')
-        os.system('rm -rf '+self.out)
         rvaldict = wvrgcal(vis="myinput.ms", caltable=self.out, segsource=False, statsource='0455-462', toffset=0.)
 
         if self.makeref:
@@ -305,7 +290,6 @@ class wvrgcal_test(unittest.TestCase):
         '''Test 11:  wvrgcal4quasar_10s.ms, nsol, segsource=False'''
         myvis = self.vis_g
         os.system('cp -R ' + myvis + ' myinput.ms')
-        os.system('rm -rf '+self.out)
         rvaldict = wvrgcal(vis="myinput.ms", caltable=self.out, segsource=False, nsol=5, toffset=0.)
 
         if self.makeref:
@@ -324,7 +308,6 @@ class wvrgcal_test(unittest.TestCase):
         '''Test 12:  wvrgcal4quasar_10s.ms, disperse'''
         myvis = self.vis_g
         os.system('cp -R ' + myvis + ' myinput.ms')
-        os.system('rm -rf '+self.out)
         rvaldict = wvrgcal(vis="myinput.ms",caltable=self.out, disperse=True, toffset=-1.)
 
         if self.makeref:
@@ -346,7 +329,6 @@ class wvrgcal_test(unittest.TestCase):
 
         flagdata(vis="myinput.ms", spw='0', mode='manual')
         
-        os.system('rm -rf '+self.out)
         rvaldict = wvrgcal(vis="myinput.ms", caltable=self.out, disperse=True, toffset=-1.)
 
         print(rvaldict)
@@ -365,7 +347,6 @@ class wvrgcal_test(unittest.TestCase):
         os.system('cp -R ' + myvis + ' myinput.ms')
 
         flagdata(vis="myinput.ms", timerange='09:10:11~09:10:15', antenna='DV14&&*', mode='manual')
-        #flagdata(vis="myinput.ms", scan='2', mode='manual')
         split(vis='myinput.ms', outputvis='myinput2.ms', datacolumn='data', keepflags=False)
         
         rvaldict = wvrgcal(vis="myinput.ms", caltable='comp.W', toffset=0.)
@@ -390,8 +371,6 @@ class wvrgcal_test(unittest.TestCase):
         myvis = self.vis_g
         os.system('rm -rf myinput2.ms comp.W')
         os.system('cp -R ' + myvis + ' myinput.ms')
-
-        os.system('rm -rf '+self.out)
 
         rvaldict = wvrgcal(vis="myinput.ms", caltable=self.out, wvrflag='DA41', toffset=-1.)
 
@@ -420,7 +399,6 @@ class wvrgcal_test(unittest.TestCase):
         '''Test 16: Test the maxdistm and minnumants parameters'''
         myvis = self.vis_f
         os.system('cp -R ' + myvis + ' myinput.ms')
-        os.system('rm -rf '+self.out)
         rvaldict = wvrgcal(vis="myinput.ms",caltable=self.out, wvrflag=['0', '1'], toffset=0., maxdistm=40., minnumants=2)
 
         if self.makeref:
@@ -454,7 +432,6 @@ class wvrgcal_test(unittest.TestCase):
         os.system('rm -rf myinput2.ms comp.W')
         os.system('cp -R ' + myvis + ' myinput.ms')
 
-        os.system('rm -rf '+self.out)
         rvaldict = wvrgcal(vis="myinput.ms", caltable=self.out, wvrflag='DA41', toffset=-1.)
 
         flagdata(vis='myinput.ms', mode='manual', antenna='DA41&&*')
@@ -485,7 +462,6 @@ class wvrgcal_test(unittest.TestCase):
         os.system('rm -rf myinput2.ms comp.W')
         os.system('cp -R ' + myvis + ' myinput.ms')
 
-        os.system('rm -rf '+self.out)
         rvaldict = wvrgcal(vis="myinput.ms", caltable=self.out, wvrflag='DA41', toffset=-1.)
 
         flagdata(vis='myinput.ms', mode='manual', antenna='DA41&&*')
@@ -515,8 +491,6 @@ class wvrgcal_test(unittest.TestCase):
         myvis = self.vis_g
         os.system('cp -R ' + myvis + ' myinput.ms')
 
-        os.system('rm -rf '+self.out)
-
         flagdata(vis='myinput.ms', mode='manual', antenna='PM02&&*', scan='3')
 
         rvaldict = wvrgcal(vis="myinput.ms", caltable=self.out, wvrflag='DA41', toffset=-1., mingoodfrac=0.2)
@@ -539,8 +513,6 @@ class wvrgcal_test(unittest.TestCase):
         myvis = self.vis_g
         os.system('rm -rf myinput2.ms comp.W')
         os.system('cp -R ' + myvis + ' myinput.ms')
-
-        os.system('rm -rf '+self.out)
 
         rvaldict = wvrgcal(vis="myinput.ms", caltable=self.out, toffset=-1., spw=[1,3,5,7], wvrspw=[0])
 
@@ -566,7 +538,6 @@ class wvrgcal_test(unittest.TestCase):
         '''Test 21:  uid___A002_X8ca70c_X5_shortened.ms - refant handling'''
         myvis = self.vis_h
         os.system('cp -R ' + myvis + ' myinput.ms')
-        os.system('rm -rf '+self.out)
         rvaldict = wvrgcal(vis="myinput.ms",caltable=self.out, toffset=0, refant=['DV11','DV12','DV09'], wvrflag=['DA41','DV11'])
 
         print(rvaldict)
