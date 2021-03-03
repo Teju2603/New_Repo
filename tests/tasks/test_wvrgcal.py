@@ -12,7 +12,6 @@ import unittest
 
 from casatestutils import testhelper as th
 
-
 tb = table( )
 
 class wvrgcal_test(unittest.TestCase):
