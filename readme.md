@@ -1,5 +1,5 @@
 
-## ALMAtasks 
+## ALMAtasks
 
 This repository contains the ALMA tasks which are used with [CASAtools](https://open-bitbucket.nrao.edu/projects/CASA/repos/CASAtools/browse) and [CASAtasks](https://open-bitbucket.nrao.edu/projects/CASA/repos/CASAtasks/browse).
 
