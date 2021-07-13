@@ -912,7 +912,7 @@ if __name__ == '__main__':
            long_description="ALMA tasks",
            cmdclass={ 'bdist_wheel': BdistWheel,'install': InstallPlatlib },
            package_dir = { '' : os.path.join('build', distutils_dir_name('lib')) },
-           packages=[ "almatasks", "almatasks.private" ],
+           packages=[ "almatasks", "almatasks.private", "almatasks.gotasks" ],
            package_data= { 'almatasks': all_files('almatasks/__lib__') + \
                                         all_files('almatasks/__bin__') + \
                                         ["LICENSE.txt"] },
