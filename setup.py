@@ -834,15 +834,19 @@ if __name__ == '__main__':
     cc = new_compiler("posix", verbose=True)
     customize_compiler(cc,True)
     objs = cc.compile( CASAWVR_SOURCE, os.path.join(tmpdir,"wvrgcal") )
+
+    libs = ["boost_program_options", "lapack", "blas", "pthread", "dl"]
+
     if sys.platform == 'darwin':
         ### need to get '/opt/local/lib/gcc5' from gfortran directly
         rpath = [ '-Wl,-rpath,@loader_path/../__lib__' ]
         archflags = ['-L/opt/local/lib/gcc5']
     else:
+        libs.append("rt")
         rpath = [ '-Wl,-rpath,$ORIGIN/../__lib__']
-        archflags = ['-lrt' ]
+        archflags = [ ]
 
-    cc.link( CCompiler.EXECUTABLE, objs, os.path.join(bindir,"wvrgcal"), libraries=["boost_program_options", "lapack", "blas", "pthread", "dl"], extra_preargs=props['build.flags.link.openmp'] + rpath + props['build.flags.link.gsl'] + archflags )
+    cc.link( CCompiler.EXECUTABLE, objs, os.path.join(bindir,"wvrgcal"), libraries=libs, extra_preargs=props['build.flags.link.openmp'] + rpath + props['build.flags.link.gsl'] + archflags )
     if isexe("scripts/mod-closure") and not os.path.isfile(".created.closure"):
         print("generating module closure...")
         if Proc([ "scripts/mod-closure", moduledir, "lib=%s" % libdir ]) != 0:
