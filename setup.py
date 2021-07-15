@@ -840,7 +840,7 @@ if __name__ == '__main__':
         archflags = ['-L/opt/local/lib/gcc5']
     else:
         rpath = [ '-Wl,-rpath,$ORIGIN/../__lib__']
-        archflags = [ ]
+        archflags = ['-lrt' ]
 
     cc.link( CCompiler.EXECUTABLE, objs, os.path.join(bindir,"wvrgcal"), libraries=["boost_program_options", "lapack", "blas", "pthread", "dl"], extra_preargs=props['build.flags.link.openmp'] + rpath + props['build.flags.link.gsl'] + archflags )
     if isexe("scripts/mod-closure") and not os.path.isfile(".created.closure"):
