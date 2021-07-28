@@ -73,6 +73,7 @@ class SpwInfo:
         self.tb.close()
     
 def areIdentical(spwInfo1,spwInfo2) :
+    print("WARNING: areIdentical(...) will be removed from the almatasks package in CASA 6.4")
     if len(spwInfo1.parameters) <= len(spwInfo2.parameters) :
         minState = spwInfo1 ; maxState = spwInfo2
     else :
@@ -88,6 +89,7 @@ def areIdentical(spwInfo1,spwInfo2) :
     else : return True
 
 def trimSpwmap(spwMap) :
+    print("WARNING: trimSpwmap(...) will be removed from the almatasks package in CASA 6.4")
     compare = range(len(spwMap))
     evenPoint = compare[-1]
     for i in compare :
@@ -124,6 +126,7 @@ def tsysspwmap(vis,tsystable,trim=True,relax=False, tsysChanTol=0):
 
     """
 
+    print("WARNING: tsysspwmap(...) will be removed from the almatasks package in CASA 6.4")
     localTb = tbtool()
     spwMaps = []
     # Get the spectral windows with entries in the solution table
@@ -211,6 +214,7 @@ def fixsyscaltimes(vis,newinterval=2.0):
      revise the table.
     """
 
+    print("WARNING: fixsyscaltimes(...) will be removed from the almatasks package in CASA 6.4")
     import pylab as mypl
     import math as mymath
     myqa=qatool()
@@ -294,6 +298,7 @@ def calantsub(incaltable,outcaltable='',
     
     """
 
+    print("WARNING: calantsub(...) will be removed from the almatasks package in CASA 6.4")
     import pylab as mypl
     
     # trap insufficient ant subant specifications
@@ -412,6 +417,7 @@ def editIntentscsv(intentcsv, dryrun=False, verbose=False):
          multiple scans or intents must be quoted, either single or double quote
     -Todd Hunter
     """
+    print("WARNING: editIntentscsv(...) will be removed from the almatasks package in CASA 6.4")
     if (not os.path.exists(intentcsv)):
         print("Could not find intentcsv file: ", intentcsv)
         return
@@ -464,6 +470,7 @@ def editIntents(msName='', field='', scan='', newintents='',
       The modifier #ON_SOURCE will be added to all specified intents.
     - T. Hunter
     """
+    print("WARNING: editIntents(...) will be removed from the almatasks package in CASA 6.4")
     validIntents = ['AMPLITUDE','ATMOSPHERE','BANDPASS','CHECK_SOURCE',
                     'DELAY','FLUX','FOCUS', 'PHASE','POINTING', 
                     'SIDEBAND_RATIO', 'TARGET','WVR', 'CALIBRATE_AMPLI', 
@@ -647,6 +654,7 @@ def genImageName(vis='', spw='', field='', imtype='mfs', targettype='sci', stoke
                     It is appended at the end of the name.
     """
 
+    print("WARNING: genImageName(...) will be removed from the almatasks package in CASA 6.4")
     themous = ''
     theobject = ''
     thetargettype = ''
