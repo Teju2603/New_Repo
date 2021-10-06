@@ -189,42 +189,42 @@ CASACORE_YACC=[ 'casa-source/casatools/casacore/tables/TaQL/RecordGram.yy',
                 'casa-source/casatools/casacore/ms/MSSel/MSAntennaGram.yy',
                 'casa-source/casatools/casacore/ms/MSSel/MSObservationGram.yy' ]
 
-CASAWVR_SOURCE = [ 'casa-source/casa5/code/air_casawvr/cmdline/wvrgcal.cpp', 'casa-source/casa5/code/air_casawvr/cmdline/wvrgcalerrors.cpp',
-                   'casa-source/casa5/code/air_casawvr/cmdline/wvrgcalfeedback.cpp', 'casa-source/casa5/code/air_casawvr/src/apps/arraygains.cpp',
-                   'casa-source/casa5/code/air_casawvr/src/apps/segmentation.cpp', 'casa-source/casa5/code/air_casawvr/src/apps/arraydata.cpp',
-                   'casa-source/casa5/code/air_casawvr/casawvr/mswvrdata.cpp', 'casa-source/casa5/code/air_casawvr/casawvr/msutils.cpp',
-                   'casa-source/casa5/code/air_casawvr/src/dipmodel_iface.cpp', 'casa-source/casa5/code/air_casawvr/src/apps/almaresults.cpp',
-                   'casa-source/casa5/code/air_casawvr/src/apps/almaopts.cpp', 'casa-source/casa5/code/air_casawvr/src/apps/almaabs_i.cpp',
-                   'casa-source/casa5/code/air_casawvr/src/model_iface.cpp', 'casa-source/casa5/code/air_casawvr/src/measure_iface.cpp',
-                   'casa-source/casa5/code/air_casawvr/casawvr/msspec.cpp', 'casa-source/casa5/code/air_casawvr/casawvr/msgaintable.cpp',
-                   'casa-source/casa5/code/air_casawvr/src/dispersion.cpp', 'casa-source/casa5/code/air_casawvr/src/radiometermeasure.cpp',
-                   'casa-source/casa5/code/air_casawvr/src/radiometer_utils.cpp', 'casa-source/casa5/code/air_casawvr/src/apps/dtdlcoeffs.cpp',
-                   'casa-source/casa5/code/air_casawvr/src/model_make.cpp', 'casa-source/casa5/code/air_casawvr/src/cloudywater.cpp',
-                   'casa-source/casa5/code/air_casawvr/src/rtranfer.cpp', 'casa-source/casa5/code/air_casawvr/src/columns.cpp',
-                   'casa-source/casa5/code/air_casawvr/src/lineparams.cpp', 'casa-source/casa5/code/air_casawvr/src/models_basic.cpp',
-                   'casa-source/casa5/code/air_casawvr/src/singlelayerwater.cpp', 'casa-source/casa5/code/air_casawvr/src/slice.cpp',
-                   'casa-source/casa5/code/air_casawvr/src/basicphys.cpp', 'casa-source/casa5/code/air_casawvr/src/apps/antennautils.cpp',
-                   'casa-source/casa5/code/air_casawvr/src/dtdltools.cpp', 'casa-source/casa5/code/air_casawvr/casawvr/msantdata.cpp',
-                   'casa-source/casa5/code/air_casawvr/src/layers.cpp', 'casa-source/casa5/code/air_casawvr/src/columns_data.cpp',
-                   'casa-source/casa5/code/air_casawvr/src/partitionsum.cpp', 'casa-source/casa5/code/air_casawvr/src/partitionsum_testdata.cpp',
-                   'casa-source/casa5/code/air_casawvr/src/libair_main.cpp',
+CASAWVR_SOURCE = [ 'src/code/air_casawvr/cmdline/wvrgcal.cpp', 'src/code/air_casawvr/cmdline/wvrgcalerrors.cpp',
+                   'src/code/air_casawvr/cmdline/wvrgcalfeedback.cpp', 'src/code/air_casawvr/src/apps/arraygains.cpp',
+                   'src/code/air_casawvr/src/apps/segmentation.cpp', 'src/code/air_casawvr/src/apps/arraydata.cpp',
+                   'src/code/air_casawvr/casawvr/mswvrdata.cpp', 'src/code/air_casawvr/casawvr/msutils.cpp',
+                   'src/code/air_casawvr/src/dipmodel_iface.cpp', 'src/code/air_casawvr/src/apps/almaresults.cpp',
+                   'src/code/air_casawvr/src/apps/almaopts.cpp', 'src/code/air_casawvr/src/apps/almaabs_i.cpp',
+                   'src/code/air_casawvr/src/model_iface.cpp', 'src/code/air_casawvr/src/measure_iface.cpp',
+                   'src/code/air_casawvr/casawvr/msspec.cpp', 'src/code/air_casawvr/casawvr/msgaintable.cpp',
+                   'src/code/air_casawvr/src/dispersion.cpp', 'src/code/air_casawvr/src/radiometermeasure.cpp',
+                   'src/code/air_casawvr/src/radiometer_utils.cpp', 'src/code/air_casawvr/src/apps/dtdlcoeffs.cpp',
+                   'src/code/air_casawvr/src/model_make.cpp', 'src/code/air_casawvr/src/cloudywater.cpp',
+                   'src/code/air_casawvr/src/rtranfer.cpp', 'src/code/air_casawvr/src/columns.cpp',
+                   'src/code/air_casawvr/src/lineparams.cpp', 'src/code/air_casawvr/src/models_basic.cpp',
+                   'src/code/air_casawvr/src/singlelayerwater.cpp', 'src/code/air_casawvr/src/slice.cpp',
+                   'src/code/air_casawvr/src/basicphys.cpp', 'src/code/air_casawvr/src/apps/antennautils.cpp',
+                   'src/code/air_casawvr/src/dtdltools.cpp', 'src/code/air_casawvr/casawvr/msantdata.cpp',
+                   'src/code/air_casawvr/src/layers.cpp', 'src/code/air_casawvr/src/columns_data.cpp',
+                   'src/code/air_casawvr/src/partitionsum.cpp', 'src/code/air_casawvr/src/partitionsum_testdata.cpp',
+                   'src/code/air_casawvr/src/libair_main.cpp',
 
-                   'casa-source/casa5/code/bnmin1/src/nestedsampler.cxx',
-                   'casa-source/casa5/code/bnmin1/src/nestederr.cxx', 'casa-source/casa5/code/bnmin1/src/priors.cxx',
-                   'casa-source/casa5/code/bnmin1/src/minimmodel.cxx', 'casa-source/casa5/code/bnmin1/src/bnmin_main.cxx',
-                   'casa-source/casa5/code/bnmin1/src/prior_sampler.cxx', 'casa-source/casa5/code/bnmin1/src/mcpoint.cxx',
-                   'casa-source/casa5/code/bnmin1/src/markovchain.cxx', 'casa-source/casa5/code/bnmin1/src/metro_propose.cxx',
-                   'casa-source/casa5/code/bnmin1/src/paramalgo.cxx', 'casa-source/casa5/code/bnmin1/src/minim.cxx',
-                   'casa-source/casa5/code/bnmin1/src/nestedinitial.cxx',
+                   'src/code/bnmin1/src/nestedsampler.cxx',
+                   'src/code/bnmin1/src/nestederr.cxx', 'src/code/bnmin1/src/priors.cxx',
+                   'src/code/bnmin1/src/minimmodel.cxx', 'src/code/bnmin1/src/bnmin_main.cxx',
+                   'src/code/bnmin1/src/prior_sampler.cxx', 'src/code/bnmin1/src/mcpoint.cxx',
+                   'src/code/bnmin1/src/markovchain.cxx', 'src/code/bnmin1/src/metro_propose.cxx',
+                   'src/code/bnmin1/src/paramalgo.cxx', 'src/code/bnmin1/src/minim.cxx',
+                   'src/code/bnmin1/src/nestedinitial.cxx',
 
-                   'casa-source/casa5/code/air_casawvr/src/apps/almaabs.cpp',
+                   'src/code/air_casawvr/src/apps/almaabs.cpp',
 
-                   'casa-source/casa5/code/synthesis/CalTables/NewCalTable.cc', 'casa-source/casa5/code/synthesis/CalTables/CTMainRecord.cc',
-                   'casa-source/casa5/code/synthesis/CalTables/CTMainColumns.cc', 'casa-source/casa5/code/synthesis/CalTables/RIorAParray.cc',
-                   'casa-source/casa5/code/synthesis/CalTables/CalHistRecord.cc', 'casa-source/casa5/code/msvis/MSVis/MSCalEnums.cc',
-                   'casa-source/casa5/code/synthesis/CalTables/CTDesc.cc', 'casa-source/casa5/code/synthesis/CalTables/CTEnums.cc',
-                   'casa-source/casa5/code/synthesis/CalTables/CalTable.cc', 'casa-source/casa5/code/synthesis/CalTables/CalDescRecord.cc',
-                   'casa-source/casa5/code/synthesis/CalTables/CalMainRecord.cc', 'casa-source/casa5/code/synthesis/CalTables/CTColumns.cc',
+                   'casa-source/casatools/src/code/synthesis/CalTables/NewCalTable.cc', 'casa-source/casatools/src/code/synthesis/CalTables/CTMainRecord.cc',
+                   'casa-source/casatools/src/code/synthesis/CalTables/CTMainColumns.cc', 'casa-source/casatools/src/code/synthesis/CalTables/RIorAParray.cc',
+                   'casa-source/casatools/src/code/synthesis/CalTables/CalHistRecord.cc', 'casa-source/casatools/src/code/msvis/MSVis/MSCalEnums.cc',
+                   'casa-source/casatools/src/code/synthesis/CalTables/CTDesc.cc', 'casa-source/casatools/src/code/synthesis/CalTables/CTEnums.cc',
+                   'casa-source/casatools/src/code/synthesis/CalTables/CalTable.cc', 'casa-source/casatools/src/code/synthesis/CalTables/CalDescRecord.cc',
+                   'casa-source/casatools/src/code/synthesis/CalTables/CalMainRecord.cc', 'casa-source/casatools/src/code/synthesis/CalTables/CTColumns.cc',
 
                    'casa-source/casatools/casacore/casa/Exceptions/Error2.cc', 'casa-source/casatools/casacore/casa/Arrays/ArrayError.cc',
                    'casa-source/casatools/casacore/casa/Containers/Block.cc', 'casa-source/casatools/casacore/tables/Tables/ColumnDesc.cc',
@@ -239,7 +239,7 @@ CASAWVR_SOURCE = [ 'casa-source/casa5/code/air_casawvr/cmdline/wvrgcal.cpp', 'ca
                    'casa-source/casatools/casacore/tables/DataMan/DataManagerColumn.cc', 'casa-source/casatools/casacore/tables/DataMan/StManColumnBase.cc',
                    'casa-source/casatools/casacore/tables/Tables/PlainTable.cc', 'casa-source/casatools/casacore/tables/Tables/ColumnCache.cc',
                    'casa-source/casatools/casacore/tables/Tables/TableCache.cc', 'casa-source/casatools/casacore/casa/Quanta/MVFrequency.cc',
-                   'casa-source/casatools/casacore/casa/OS/Mutex.cc', 'casa-source/casatools/casacore/casa/OS/MemoryTrace.cc',
+                   'casa-source/casatools/casacore/casa/OS/MemoryTrace.cc',
                    'casa-source/casatools/casacore/tables/Tables/PlainColumn.cc', 'casa-source/casatools/casacore/casa/Utilities/RegSequence.cc',
                    'casa-source/casatools/casacore/tables/DataMan/StManAipsIO.cc', 'casa-source/casatools/casacore/tables/Tables/TableColumn.cc',
                    'casa-source/casatools/casacore/tables/Tables/TableRecord.cc', 'casa-source/casatools/casacore/casa/Containers/ValueHolder.cc',
@@ -450,8 +450,8 @@ CASAWVR_SOURCE = [ 'casa-source/casa5/code/air_casawvr/cmdline/wvrgcal.cpp', 'ca
 #                  'casa-source/casatools/casacore/casa/Utilities/cregex.cc',
                    'casa-source/casatools/casacore/casa/aips.cc',
                    #### compile asdm storage manager into executable
-                   'casa-source/casa5/code/asdmstman/AsdmColumn.cc', 'casa-source/casa5/code/asdmstman/AsdmStMan.cc',
-                   'casa-source/casa5/code/asdmstman/AsdmIndex.cc', 'casa-source/casa5/code/asdmstman/Register.cc',
+                   'casa-source/casatools/src/code/asdmstman/AsdmColumn.cc', 'casa-source/casatools/src/code/asdmstman/AsdmStMan.cc',
+                   'casa-source/casatools/src/code/asdmstman/AsdmIndex.cc', 'casa-source/casatools/src/code/asdmstman/Register.cc',
                    #### version information
                    'generated/source/version.cc',
 ]
@@ -484,7 +484,7 @@ module_cflags = { '/casacore/': ['-DCFITSIO_VERSION_MAJOR=3', '-DCFITSIO_VERSION
                                           '-DNO_CRASH_REPORTER', '-fno-omit-frame-pointer', '-DWITHOUT_ACS', '-DWITHOUT_BOOST',
                                           '-DCASATOOLS', '-DCASA6' ] + platform_cflags[sys.platform] }
 
-xml_xlate = { 'casa-source/casa5/gcwrap/tasks/wvrgcal.xml': 'xml/wvrgcal.xml' }
+xml_xlate = { }
 xml_files = [ 'xml/wvrgcal.xml' ]
 public_files = [ 'src/tasks/LICENSE.txt' ]
 private_scripts = [ 'src/tasks/task_wvrgcal.py', 'src/scripts/almahelpers.py' ]
@@ -560,8 +560,8 @@ def customize_compiler(self, verbose=False):
     if 'build.python.numpy_dir' in tools_config and len(tools_config['build.python.numpy_dir']) > 0:
         cflags.insert(0,'-I' + tools_config['build.python.numpy_dir'])       ### OS could have different version of python in
                                                                       ###     /usr/include (e.g. rhel6)
-    new_compiler_cxx = ccache + [tools_config['build.compiler.cxx'], '-g', '-std=c++11', '-I%s/local/include' % os.getcwd( ), '-Ibinding/include','-Igenerated/include','-Ilibcasatools/generated/include','-Icasa-source/casa5/code','-Icasa-source','-Icasa-source/casatools/casacore', '-Iinclude', '-Isakura-source/src'] + cflags + default_compiler_so[1:]
-    new_compiler_cc = ccache + [tools_config['build.compiler.cc'], '-g', '-Ibinding/include','-Igenerated/include','-Ilibcasatools/generated/include','-Icasa-source/casa5/code','-Icasa-source','-Icasa-source/casatools/casacore', '-Iinclude', 'sakura-source/src'] + cflags + default_compiler_so[1:]
+    new_compiler_cxx = ccache + [tools_config['build.compiler.cxx'], '-g', '-std=c++11', '-I%s/local/include' % os.getcwd( ), '-Isrc/code', '-Ibinding/include','-Igenerated/include','-Ilibcasatools/generated/include','-Icasa-source/casatools/src/code','-Icasa-source','-Icasa-source/casatools/casacore', '-Iinclude', '-Isakura-source/src'] + cflags + default_compiler_so[1:]
+    new_compiler_cc = ccache + [tools_config['build.compiler.cc'], '-g', '-Isrc/code', '-Ibinding/include','-Igenerated/include','-Ilibcasatools/generated/include','-Icasa-source/casatools/src/code','-Icasa-source','-Icasa-source/casatools/casacore', '-Iinclude', 'sakura-source/src'] + cflags + default_compiler_so[1:]
     new_compiler_fortran = [tools_config['build.compiler.fortran']]
 
     new_compiler_cxx = list(filter(lambda flag: not flag.startswith('-O'),new_compiler_cxx))
@@ -703,7 +703,7 @@ def generate_version_file( file ):
                      '@CASA_VERSION_PATCH@': version[2], '@CASA_VERSION_FEATURE@': version[3],
                      '@CASA_VERSION_DESC@': 'ALMAtasks:v1.0.0' }
 
-    with open('casa-source/casa5/code/stdcasa/version.cc.in') as infile, open(file, 'w') as outfile:
+    with open('casa-source/casatools/src/code/stdcasa/version.cc.in') as infile, open(file, 'w') as outfile:
         for line in infile:
             for src, target in replacements.items( ):
                 line = line.replace(src, target)
@@ -834,15 +834,19 @@ if __name__ == '__main__':
     cc = new_compiler("posix", verbose=True)
     customize_compiler(cc,True)
     objs = cc.compile( CASAWVR_SOURCE, os.path.join(tmpdir,"wvrgcal") )
+
+    libs = ["boost_program_options", "lapack", "blas", "pthread", "dl"]
+
     if sys.platform == 'darwin':
         ### need to get '/opt/local/lib/gcc5' from gfortran directly
         rpath = [ '-Wl,-rpath,@loader_path/../__lib__' ]
         archflags = ['-L/opt/local/lib/gcc5']
     else:
+        libs.append("rt")
         rpath = [ '-Wl,-rpath,$ORIGIN/../__lib__']
         archflags = [ ]
 
-    cc.link( CCompiler.EXECUTABLE, objs, os.path.join(bindir,"wvrgcal"), libraries=["boost_program_options", "lapack", "blas", "pthread", "dl"], extra_preargs=props['build.flags.link.openmp'] + rpath + props['build.flags.link.gsl'] + archflags )
+    cc.link( CCompiler.EXECUTABLE, objs, os.path.join(bindir,"wvrgcal"), libraries=libs, extra_preargs=props['build.flags.link.openmp'] + rpath + props['build.flags.link.gsl'] + archflags )
     if isexe("scripts/mod-closure") and not os.path.isfile(".created.closure"):
         print("generating module closure...")
         if Proc([ "scripts/mod-closure", moduledir, "lib=%s" % libdir ]) != 0:
