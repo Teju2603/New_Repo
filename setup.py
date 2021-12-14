@@ -487,7 +487,7 @@ module_cflags = { '/casacore/': ['-DCFITSIO_VERSION_MAJOR=3', '-DCFITSIO_VERSION
 xml_xlate = { }
 xml_files = [ 'xml/wvrgcal.xml' ]
 public_files = [ 'src/tasks/LICENSE.txt' ]
-private_scripts = [ 'src/tasks/task_wvrgcal.py', 'src/scripts/almahelpers.py' ]
+private_scripts = [ 'src/tasks/task_wvrgcal.py' ]
 private_modules = [  ]
 
 if pyversion < 3:
@@ -765,9 +765,6 @@ def generate_pyinit(moduledir,tasks):
         fd.write("          ]\n\n")
         for task in tasks:
             fd.write("from .%s import %s\n" % (task,task))
-        fd.write("\n")
-        for imp in [ 'from .private.almahelpers import tsysspwmap' ]:
-            fd.write( "%s\n" % imp )
         fd.write("\n")
 
 # run the customize_compiler
