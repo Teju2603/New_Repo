@@ -1,5 +1,26 @@
-# unit test for the wvrgcal task
-
+##########################################################################
+# test_task_wvrgcal.py
+#
+# Copyright (C) 2018
+# Associated Universities, Inc. Washington DC, USA.
+#
+# This script is free software; you can redistribute it and/or modify it
+# under the terms of the GNU Library General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or (at your
+# option) any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+# License for more details.
+#
+# [Add the link to the JIRA ticket here once it exists]
+#
+# Based on the requirements listed in plone found here:
+# https://casadocs.readthedocs.io/en/stable/api/tt/almatasks.wvrgcal.html
+#
+#
+##########################################################################
 import os
 import sys
 import shutil
@@ -19,6 +40,7 @@ class wvrgcal_test(unittest.TestCase):
     vis_f = 'multisource_unittest.ms'
     vis_g = 'wvrgcal4quasar_10s.ms'
     vis_h = 'uid___A002_X8ca70c_X5_shortened.ms'
+    inplist = [vis_f, vis_g, vis_h]
     ref = ['multisource_unittest_reference.wvr', # ref0
            'multisource_unittest_reference-newformat.wvr', # ref1: test2
            'wvrgcalctest.W', # ref2
@@ -83,12 +105,17 @@ class wvrgcal_test(unittest.TestCase):
 
 
     def tearDown(self):
-        os.system('rm -rf myinput.ms')
-        os.system('rm -rf ' + self.out)
+        os.system('rm -rf myinput.ms*')
+        os.system('rm -rf ' + self.out +'*')
         for i in range(0,len(self.ref)):
             os.system('rm -rf ' + self.ref[i])
 
+        for ii in self.inplist:
+            if os.path.exists(ii):
+                shutil.rmtree(ii)
 
+        if os.path.exists('comp.W'): shutil.rmtree('comp.W')
+        if os.path.exists('comp2.W'): shutil.rmtree('comp2.W')
 
 # Test cases    
     def test1(self):
@@ -547,10 +574,6 @@ class wvrgcal_test(unittest.TestCase):
             self.assertTrue(rvaldict['Disc_um']==[0.0, 6790.0, 6920.0, 7170.0, 7180.0, 6810.0, 7100.0, 6720.0, 6860.0, 6600.0, 7090.0, 7000.0,
                                                   6990.0, 6700.0, 7280.0, 7040.0, 7160.0, 6790.0, 6980.0, 6890.0, 7120.0, 0.0, 7080.0, 6970.0,
                                                   6950.0, 6930.0, 7060.0, 6850.0, 7030.0])
-
-
-def suite():
-    return [wvrgcal_test]
 
 if __name__ == '__main__':
     unittest.main()
