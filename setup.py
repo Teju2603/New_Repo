@@ -288,7 +288,7 @@ CASAWVR_SOURCE = [ 'src/code/air_casawvr/cmdline/wvrgcal.cpp', 'src/code/air_cas
                    'casa-source/casatools/casacore/ms/MeasurementSets/MSStateColumns.cc', 'casa-source/casatools/casacore/ms/MeasurementSets/MSSourceColumns.cc',
                    'casa-source/casatools/casacore/ms/MeasurementSets/MSSysCalColumns.cc', 'casa-source/casatools/casacore/casa/Containers/Record2Interface.cc',
                    'casa-source/casatools/casacore/tables/TaQL/TaQLNodeHandler.cc', 'casa-source/casatools/casacore/casa/IO/BucketBase.cc',
-                   'casa-source/casatools/casacore/tables/DataMan/TSMCubeMMap.cc',
+                   'casa-source/casatools/casacore/tables/DataMan/TSMCubeMMap.cc', 'casa-source/casatools/casacore/tables/Tables/TableUtil.cc',
                    'casa-source/casatools/casacore/ms/MSSel/MSTableIndex.cc', 'casa-source/casatools/casacore/measures/TableMeasures/TableMeasColumn.cc',
                    'casa-source/casatools/casacore/casa/IO/BucketMapped.cc', 'casa-source/casatools/casacore/tables/Tables/ColumnsIndex.cc',
                    'casa-source/casatools/casacore/tables/TaQL/TaQLNode.cc', 'casa-source/casatools/casacore/casa/IO/BucketBuffered.cc',
