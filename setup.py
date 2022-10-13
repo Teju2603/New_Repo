@@ -240,7 +240,7 @@ CASAWVR_SOURCE = [ 'src/code/air_casawvr/cmdline/wvrgcal.cpp', 'src/code/air_cas
                    'casa-source/casatools/casacore/tables/Tables/PlainTable.cc', 'casa-source/casatools/casacore/tables/Tables/ColumnCache.cc',
                    'casa-source/casatools/casacore/tables/Tables/TableCache.cc', 'casa-source/casatools/casacore/casa/Quanta/MVFrequency.cc',
                    'casa-source/casatools/casacore/casa/OS/MemoryTrace.cc',
-                   'casa-source/casatools/casacore/tables/Tables/PlainColumn.cc', 'casa-source/casatools/casacore/casa/Utilities/RegSequence.cc',
+                   'casa-source/casatools/casacore/tables/Tables/PlainColumn.cc',
                    'casa-source/casatools/casacore/tables/DataMan/StManAipsIO.cc', 'casa-source/casatools/casacore/tables/Tables/TableColumn.cc',
                    'casa-source/casatools/casacore/tables/Tables/TableRecord.cc', 'casa-source/casatools/casacore/casa/Containers/ValueHolder.cc',
                    'casa-source/casatools/casacore/tables/DataMan/BitFlagsEngine.cc', 'casa-source/casatools/casacore/tables/Tables/ConcatColumn.cc',
