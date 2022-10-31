@@ -630,7 +630,7 @@ def customize_compiler(self, verbose=False):
 
         if target_desc == "executable":
             try:
-                link_line = cxx + [ '-o', output_filename ] + platform_ldflags[sys.platform] + rpath + objects + [ os.path.join('local', 'lib', l) for l in ['libboost_filesystem.a', 'libboost_program_options.a', 'libboost_random.a', 'libboost_regex.a', 'libboost_system.a', 'libgsl.a', 'libgslcblas.a'] ] + [ "-l%s" % x for x in libraries if not any([f in x for f in ['boost', 'gsl']]) ] + [ "-L%s" % l for l in ld_dirs ]
+                link_line = [ cxx ] + [ '-o', output_filename ] + platform_ldflags[sys.platform] + rpath + objects + [ os.path.join('local', 'lib', l) for l in ['libboost_filesystem.a', 'libboost_program_options.a', 'libboost_random.a', 'libboost_regex.a', 'libboost_system.a', 'libgsl.a', 'libgslcblas.a'] ] + [ "-l%s" % x for x in libraries if not any([f in x for f in ['boost', 'gsl']]) ] + [ "-L%s" % l for l in ld_dirs ]
                 print(link_line)
                 self.spawn(link_line)
             except DistutilsExecError as msg:
