@@ -566,9 +566,9 @@ def customize_compiler(self, verbose=False):
     cc = os.environ.get('ALMATASKS_CC')
 
     if cxx == None:
-       cxx == tools_config['build.compiler.cxx']
+       cxx = tools_config['build.compiler.cxx']
     if cc == None:
-       cc == tools_config['build.compiler.cc']
+       cc = tools_config['build.compiler.cc']
     print("Using cc: " + cc)
     print("Using cxx: " + cxx)
 
