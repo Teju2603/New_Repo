@@ -55,10 +55,6 @@ import os
 import re
 import argparse
 
-# Allow overriding the compiler
-cxx = os.getenv('ALMATASKS_CXX')
-cc = os.environ.get('ALMATASKS_CC')
-
 parser=argparse.ArgumentParser()
 parser.add_argument('--version', help='version')
 parser.add_argument('bdist_wheel', help='bdist_wheel')
@@ -75,11 +71,6 @@ try:
 except:
     print("cannot find CASAtools (https://open-bitbucket.nrao.edu/projects/CASA/repos/CASAtools/browse) in PYTHONPATH")
     os._exit(1)
-
-if cxx == None:
-     cxx == tools_config['build.compiler.cxx']
-if cc == None:
-     cc == tools_config['build.compiler.cc']
 
 from setuptools import setup, find_packages
 from distutils.ccompiler import new_compiler, CCompiler
@@ -569,7 +560,18 @@ def customize_compiler(self, verbose=False):
     if 'build.python.numpy_dir' in tools_config and len(tools_config['build.python.numpy_dir']) > 0:
         cflags.insert(0,'-I' + tools_config['build.python.numpy_dir'])       ### OS could have different version of python in
                                                                       ###     /usr/include (e.g. rhel6)
-   
+    
+    # Allow overriding the compiler
+    cxx = os.environ.get('ALMATASKS_CXX')
+    cc = os.environ.get('ALMATASKS_CC')
+
+    if cxx == None:
+       cxx == tools_config['build.compiler.cxx']
+    if cc == None:
+       cc == tools_config['build.compiler.cc']
+    print("Using cc: " + cc)
+    print("Using cxx: " + cxx)
+
     new_compiler_cxx = ccache + [cxx, '-g', '-std=c++11', '-I%s/local/include' % os.getcwd( ), '-Isrc/code', '-Ibinding/include','-Igenerated/include','-Ilibcasatools/generated/include','-Icasa-source/casatools/src/code','-Icasa-source','-Icasa-source/casatools/casacore', '-Iinclude', '-Isakura-source/src'] + cflags + default_compiler_so[1:]
     new_compiler_cc = ccache + [cc, '-g', '-Isrc/code', '-Ibinding/include','-Igenerated/include','-Ilibcasatools/generated/include','-Icasa-source/casatools/src/code','-Icasa-source','-Icasa-source/casatools/casacore', '-Iinclude', 'sakura-source/src'] + cflags + default_compiler_so[1:]
     new_compiler_fortran = [tools_config['build.compiler.fortran']]
