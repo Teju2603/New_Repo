@@ -55,6 +55,10 @@ import os
 import re
 import argparse
 
+# Allow overriding the compiler
+cxx = os.getenv('ALMATASKS_CXX')
+cc = os.environ.get('ALMATASKS_CC')
+
 parser=argparse.ArgumentParser()
 parser.add_argument('--version', help='version')
 parser.add_argument('bdist_wheel', help='bdist_wheel')
@@ -71,6 +75,11 @@ try:
 except:
     print("cannot find CASAtools (https://open-bitbucket.nrao.edu/projects/CASA/repos/CASAtools/browse) in PYTHONPATH")
     os._exit(1)
+
+if cxx == None:
+     cxx == tools_config['build.compiler.cxx']
+if cc == None:
+     cc == tools_config['build.compiler.cc']
 
 from setuptools import setup, find_packages
 from distutils.ccompiler import new_compiler, CCompiler
@@ -560,14 +569,15 @@ def customize_compiler(self, verbose=False):
     if 'build.python.numpy_dir' in tools_config and len(tools_config['build.python.numpy_dir']) > 0:
         cflags.insert(0,'-I' + tools_config['build.python.numpy_dir'])       ### OS could have different version of python in
                                                                       ###     /usr/include (e.g. rhel6)
-    new_compiler_cxx = ccache + [tools_config['build.compiler.cxx'], '-g', '-std=c++11', '-I%s/local/include' % os.getcwd( ), '-Isrc/code', '-Ibinding/include','-Igenerated/include','-Ilibcasatools/generated/include','-Icasa-source/casatools/src/code','-Icasa-source','-Icasa-source/casatools/casacore', '-Iinclude', '-Isakura-source/src'] + cflags + default_compiler_so[1:]
-    new_compiler_cc = ccache + [tools_config['build.compiler.cc'], '-g', '-Isrc/code', '-Ibinding/include','-Igenerated/include','-Ilibcasatools/generated/include','-Icasa-source/casatools/src/code','-Icasa-source','-Icasa-source/casatools/casacore', '-Iinclude', 'sakura-source/src'] + cflags + default_compiler_so[1:]
+   
+    new_compiler_cxx = ccache + [cxx, '-g', '-std=c++11', '-I%s/local/include' % os.getcwd( ), '-Isrc/code', '-Ibinding/include','-Igenerated/include','-Ilibcasatools/generated/include','-Icasa-source/casatools/src/code','-Icasa-source','-Icasa-source/casatools/casacore', '-Iinclude', '-Isakura-source/src'] + cflags + default_compiler_so[1:]
+    new_compiler_cc = ccache + [cc, '-g', '-Isrc/code', '-Ibinding/include','-Igenerated/include','-Ilibcasatools/generated/include','-Icasa-source/casatools/src/code','-Icasa-source','-Icasa-source/casatools/casacore', '-Iinclude', 'sakura-source/src'] + cflags + default_compiler_so[1:]
     new_compiler_fortran = [tools_config['build.compiler.fortran']]
 
     new_compiler_cxx = list(filter(lambda flag: not flag.startswith('-O'),new_compiler_cxx))
     new_compiler_ccc = list(filter(lambda flag: not flag.startswith('-O'),new_compiler_cc))
 
-    new_linker_cxx = [ tools_config['build.compiler.cxx'] ]
+    new_linker_cxx = [ cxx ]
 
     local_path_file = ".lib-path.%d" % sys.hexversion
     local_mangle_file = ".lib-mangle.%d" % sys.hexversion
@@ -618,7 +628,6 @@ def customize_compiler(self, verbose=False):
 
         if target_desc == "executable":
             try:
-                cxx = [ props['build.compiler.cxx'] ] 
                 link_line = cxx + [ '-o', output_filename ] + platform_ldflags[sys.platform] + rpath + objects + [ os.path.join('local', 'lib', l) for l in ['libboost_filesystem.a', 'libboost_program_options.a', 'libboost_random.a', 'libboost_regex.a', 'libboost_system.a', 'libgsl.a', 'libgslcblas.a'] ] + [ "-l%s" % x for x in libraries if not any([f in x for f in ['boost', 'gsl']]) ] + [ "-L%s" % l for l in ld_dirs ]
                 print(link_line)
                 self.spawn(link_line)
