@@ -853,6 +853,11 @@ if __name__ == '__main__':
         libs.append("rt")
         rpath = [ '-Wl,-rpath,$ORIGIN/../__lib__']
         archflags = [ ]
+        try:
+            copy2("/lib64/libgfortran.so.3", libdir + "/libgfortran.so.3")
+        except Exception as e:
+            print("WARNING: Couldn't copy libgfortran.so.3")
+            print(e)
 
     cc.link( CCompiler.EXECUTABLE, objs, os.path.join(bindir,"wvrgcal"), libraries=libs, extra_preargs=props['build.flags.link.openmp'] + rpath + props['build.flags.link.gsl'] + archflags )
     if isexe("scripts/mod-closure") and not os.path.isfile(".created.closure"):
@@ -860,7 +865,7 @@ if __name__ == '__main__':
         if Proc([ "scripts/mod-closure", moduledir, "lib=%s" % libdir ]) != 0:
             sys.exit("\tclosure generation failed...")
         open(".created.closure",'a').close( )
-
+    
     upgrade_xml(xml_xlate)
     print("generating task python files...")
     proc = Popen( [tools_config['build.compiler.xml-casa'], "output-task=%s" % moduledir, "-task"] + xml_files,
