@@ -853,12 +853,16 @@ if __name__ == '__main__':
         libs.append("rt")
         rpath = [ '-Wl,-rpath,$ORIGIN/../__lib__']
         archflags = [ ]
-        try:
+        # CAS-14608: Include libgfortran.so.3 in the package as it is not 
+        # provided by EL8 and later. This can be removed when Almatasks 
+        # is built with EL8 or later.
+        if os.path.isfile("/usr/lib64/libgfortran.so.3"): # EL6
+            copy2("/usr/lib64/libgfortran.so.3", libdir + "/libgfortran.so.3")
+        elif os.path.isfile("/lib64/libgfortran.so.3"): #EL7
             copy2("/lib64/libgfortran.so.3", libdir + "/libgfortran.so.3")
-        except Exception as e:
+        else:
             print("WARNING: Couldn't copy libgfortran.so.3")
-            print(e)
-
+        
     cc.link( CCompiler.EXECUTABLE, objs, os.path.join(bindir,"wvrgcal"), libraries=libs, extra_preargs=props['build.flags.link.openmp'] + rpath + props['build.flags.link.gsl'] + archflags )
     if isexe("scripts/mod-closure") and not os.path.isfile(".created.closure"):
         print("generating module closure...")
